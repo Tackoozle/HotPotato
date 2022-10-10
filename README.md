@@ -11,5 +11,5 @@ Some Features are:
 - Tabcompletions
 
 ### Documentation
-- Wiki: tba
+- Wiki: https://github.com/Tackoozle/HotPotato/wiki
 - Jenkins: tba
