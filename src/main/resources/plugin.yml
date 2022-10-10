@@ -1,0 +1,10 @@
+name: HotPotato
+version: ${project.version}
+main: dev.tacker.hotpotato.HotPotato
+api-version: 1.19
+authors: [ Tacker_ ]
+description: Something like HotPotato..
+commands:
+  hotpotato:
+    aliases: hp
+    description: Main command
