@@ -47,11 +47,14 @@ public final class HotPotato extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        manager.disable();
     }
 
     public void reload() {
         reloadConfig();
         logging = new Logging("[HP] ", " = DEBUG = ", getConfig().getBoolean("debug"));
+        manager.disable();
+        manager.loadAllArenas();
     }
 
     public void listenerRegistration() {

@@ -42,6 +42,12 @@ public class Manager {
         }
     }
 
+    public void disable() {
+        for (Arena arena : arenas) {
+            arena.stop();
+        }
+    }
+
     /**
      * get arena by player, null if no arena found
      */

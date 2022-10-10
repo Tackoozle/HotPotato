@@ -59,18 +59,19 @@ public class PlayerListener implements Listener {
             return;
         if (arena_damager == null)
             return;
-        if (arena_damaged != arena_damager)
+
+        if (!arena_damaged.getName().equals(arena_damager.getName()))
             return;
 
         if (!arena_damaged.isRunning())
             return;
-
         if (arena_damaged.isSaved(damaged))
             return;
 
         event.setCancelled(true);
         if (damager != arena_damaged.getPotato())
             return;
+
         arena_damaged.tag(damager, damaged);
     }
 }

@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 public class Arena {
-    private final ItemStack itemStack = new ItemStack(Material.POTATO);
+    private final ItemStack itemStack = new ItemStack(Material.BAKED_POTATO);
     private final String prefix = HotPotato.getInstance().getPrefix();
     private final Logging log = HotPotato.getInstance().getLogging();
 
@@ -117,6 +117,19 @@ public class Arena {
         return new Arena(name, world, region, minPlayer, maxPlayer, active,
                 lobbyPoint, gamePoint, barStyle, barColor, potatoTime,
                 reducePerTag, countdown, maxTags, saveTime);
+    }
+
+    /**
+     * stops arena, removes all player without getting a winner
+     */
+    public void stop() {
+        removeOldPotato();
+        alive.forEach(p -> {
+            preparePlayer(p);
+            p.teleport(lobbyPoint);
+            p.sendMessage(Utils.mm("<red>Arenas has been stopped. Teleporting you to the lobby."));
+        });
+        end();
     }
 
     /**
