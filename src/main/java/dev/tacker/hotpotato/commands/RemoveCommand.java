@@ -29,7 +29,7 @@ public class RemoveCommand extends CustomCommand{
     @Override
     protected void execute(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>Try it with /blocky remove <arena>"));
+            sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>Try it with /hotpotato remove <arena>"));
             return;
         }
         String name = args[0];

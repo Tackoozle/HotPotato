@@ -6,18 +6,19 @@
 
     <groupId>de.sgpggb</groupId>
     <artifactId>HotPotato</artifactId>
-    <version>0.2</version>
+    <version>0.3</version>
     <packaging>jar</packaging>
 
     <name>HotPotato</name>
 
-    <description>Something like HotPotato.. With Buckets..</description>
+    <description>Something like HotPotato..</description>
     <properties>
         <java.version>1.17</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <build>
+        <finalName>HotPotato</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

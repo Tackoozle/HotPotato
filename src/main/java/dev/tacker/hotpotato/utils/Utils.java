@@ -98,4 +98,15 @@ public class Utils {
         return value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false");
     }
 
+    /**
+     * returns location as string
+     */
+    public static String locationAsString(Location l) {
+        if (l == null)
+            return "- not set -";
+        double x = Math.round(l.getX()*100.0/100.0);
+        double y = Math.round(l.getX()*100.0/100.0);
+        double z = Math.round(l.getX()*100.0/100.0);
+        return "X: " + x + ", Y: " + y + ", Z: " + z + ", World: " + l.getWorld().getName();
+    }
 }

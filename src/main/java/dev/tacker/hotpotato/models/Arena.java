@@ -43,6 +43,7 @@ public class Arena {
     private final String name;
     private double potatoTime;
     private double reducePerTag;
+    private double saveTime;
     private String world;
     private String region;
     private int minPlayer;
@@ -54,7 +55,6 @@ public class Arena {
     private BarColor barColor;
     private int countdown;
     private int maxTags;
-    private int saveTime;
 
     //temporary vars
     private final List<Player> alive = new LinkedList<>();
@@ -74,7 +74,7 @@ public class Arena {
 
     public Arena(String name, String world, String region, int minPlayer, int maxPlayer, boolean active,
                  Location lobbyPoint, Location gamePoint, BarStyle barStyle, BarColor barColor,
-                 double potatoTime, double reducePerTag, int countdown, int maxTags, int saveTime) {
+                 double potatoTime, double reducePerTag, int countdown, int maxTags, double saveTime) {
         this.name = name;
         this.world = world;
         this.region = region;
@@ -113,7 +113,7 @@ public class Arena {
         double reducePerTag = yaml.getDouble("reducePerTag");
         int countdown = yaml.getInt("countdown");
         int maxTags = yaml.getInt("maxTags");
-        int saveTime = yaml.getInt("saveTime");
+        double saveTime = yaml.getDouble("saveTime");
         return new Arena(name, world, region, minPlayer, maxPlayer, active,
                 lobbyPoint, gamePoint, barStyle, barColor, potatoTime,
                 reducePerTag, countdown, maxTags, saveTime);
@@ -348,7 +348,7 @@ public class Arena {
         saved.add(player);
         Bukkit.getScheduler().runTaskLater(HotPotato.getInstance(), () -> {
             saved.remove(player);
-        }, saveTime * 20);
+        }, (long) (saveTime * 20));
     }
 
     public boolean isSaved(Player player) {
@@ -693,11 +693,11 @@ public class Arena {
         this.maxTags = maxTags;
     }
 
-    public int getSaveTime() {
+    public double getSaveTime() {
         return saveTime;
     }
 
-    public void setSaveTime(int saveTime) {
+    public void setSaveTime(double saveTime) {
         this.saveTime = saveTime;
     }
 

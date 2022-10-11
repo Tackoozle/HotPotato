@@ -78,7 +78,7 @@ public class SetCommand extends CustomCommand{
                 if (integer < 2)
                     integer = 2;
                 arena.setMinPlayer(integer);
-                sender.sendMessage(Utils.mm(prefix + "<green>The min. players was set successfully to " + integer + "!"));
+                sender.sendMessage(Utils.mm(prefix + "<green>Min players was set successfully to " + integer + "!"));
                 break;
             case "maxplayer":
                 if (!Utils.isInt(v)) {
@@ -89,7 +89,7 @@ public class SetCommand extends CustomCommand{
                 if (integer < arena.getMinPlayer())
                     integer = arena.getMinPlayer();
                 arena.setMaxPlayer(integer);
-                sender.sendMessage(Utils.mm(prefix + "<green>The max. players was set successfully to " + integer + "!"));
+                sender.sendMessage(Utils.mm(prefix + "<green>Max players was set successfully to " + integer + "!"));
                 break;
             case "countdown":
                 if (!Utils.isInt(v)) {
@@ -98,7 +98,7 @@ public class SetCommand extends CustomCommand{
                 }
                 integer = Integer.parseInt(v);
                 arena.setCountdown(integer);
-                sender.sendMessage(Utils.mm(prefix + "<green>The countdown was set successfully to " + integer + "!"));
+                sender.sendMessage(Utils.mm(prefix + "<green>Countdown was set successfully to " + integer + "!"));
                 break;
             case "maxtags":
                 if (!Utils.isInt(v)) {
@@ -107,7 +107,16 @@ public class SetCommand extends CustomCommand{
                 }
                 integer = Integer.parseInt(v);
                 arena.setMaxTags(integer);
-                sender.sendMessage(Utils.mm(prefix + "<green>maxtags was set successfully to " + integer + "!"));
+                sender.sendMessage(Utils.mm(prefix + "<green>Maxtags was set successfully to " + integer + "!"));
+                break;
+            case "savetime":
+                if (!Utils.isDouble(v)) {
+                    sender.sendMessage(Utils.mm(prefix + "<red>The value " + v + " is no integer!"));
+                    return;
+                }
+                doubl = Double.parseDouble(v);
+                arena.setSaveTime(doubl);
+                sender.sendMessage(Utils.mm(prefix + "<green>Savetime was set successfully to " + doubl + "!"));
                 break;
             case "reducepertag":
                 if (!Utils.isDouble(v)) {
@@ -116,7 +125,7 @@ public class SetCommand extends CustomCommand{
                 }
                 doubl = Double.parseDouble(v);
                 arena.setReducePerTag(doubl);
-                sender.sendMessage(Utils.mm(prefix + "<green>The reducepertag was set successfully to " + doubl + "!"));
+                sender.sendMessage(Utils.mm(prefix + "<green>Reducepertag was set successfully to " + doubl + "!"));
                 break;
             case "potatotime":
                 if (!Utils.isDouble(v)) {
@@ -125,7 +134,7 @@ public class SetCommand extends CustomCommand{
                 }
                 doubl = Double.parseDouble(v);
                 arena.setPotatoTime(doubl);
-                sender.sendMessage(Utils.mm(prefix + "<green>The potatotime was set successfully to " + doubl + "!"));
+                sender.sendMessage(Utils.mm(prefix + "<green>Potatotime was set successfully to " + doubl + "!"));
                 break;
             //check location
             case "lobbypoint":
@@ -161,7 +170,7 @@ public class SetCommand extends CustomCommand{
                 } else if (v.equalsIgnoreCase("remove")) {
                     arena.setActive(false);
                     sign.getPersistentDataContainer().remove(HotPotato.getInstance().key);
-                    sender.sendMessage(Utils.mm(prefix + "<green>The joinsign was removed successfully. You cant save your arena. First set a new sign!"));
+                    sender.sendMessage(Utils.mm(prefix + "<green>Joinsign was removed successfully. You cant save your arena. First set a new sign!"));
                 } else {
                     sender.sendMessage(Utils.mm(prefix + "<red>The value " + v + " is not add/remove"));
                     return;
@@ -194,7 +203,7 @@ public class SetCommand extends CustomCommand{
                 break;
             case "region":
                 arena.setRegion(v);
-                sender.sendMessage(Utils.mm(prefix + "<green>The region " + v + " was set successfully!"));
+                sender.sendMessage(Utils.mm(prefix + "<green>The region " + v + " was set successfully! (WIP)"));
                 break;
                 /*
                 RegionManager rm = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(Bukkit.getWorld(arena.getWorld())));
@@ -234,7 +243,7 @@ public class SetCommand extends CustomCommand{
     @Override
     protected List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> options = Arrays.asList(
-                "minPlayer", "maxPlayer", "countdown", "reducePerTag", "potatoTime", "maxTags",
+                "minPlayer", "maxPlayer", "countdown", "reducePerTag", "potatoTime", "maxTags", "saveTime",
                 "lobbyPoint", "gamePoint", "sign",
                 "active",
                 "region", "world", "barColor", "barStyle");
@@ -254,6 +263,8 @@ public class SetCommand extends CustomCommand{
                 switch (args[1].toLowerCase()) {
                     case "minplayer":
                     case "maxplayer":
+                    case "countdown":
+                    case "maxTags":
                         return IntStream.range(1, 100)
                                 .mapToObj(String::valueOf)
                                 .collect(Collectors.toList());
@@ -265,6 +276,10 @@ public class SetCommand extends CustomCommand{
                     case "region":
                         //TODO: add all region from world
                         break;
+                    case "reducePerTag":
+                    case "potatoTime":
+                    case "saveTime":
+                        return new ArrayList<>();
                     case "world":
                         return Bukkit.getWorlds().stream().map(WorldInfo::getName).collect(Collectors.toList());
                     case "active":

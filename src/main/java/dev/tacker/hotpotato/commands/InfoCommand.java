@@ -28,17 +28,31 @@ public class InfoCommand extends CustomCommand{
 
     @Override
     protected void execute(CommandSender sender, String[] args) {
+        String prefix = HotPotato.getInstance().getPrefix();
         if (args.length != 1) {
-            sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>Try it with /blocky remove <arena>"));
+            sender.sendMessage(Utils.mm(prefix + "<red>Try it with /hotpotato info <arena>"));
             return;
         }
         String name = args[0];
         Arena arena = HotPotato.getInstance().getManager().getArena(name);
         if (arena == null) {
-            sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>There is no arena with the name " + name + "!"));
+            sender.sendMessage(Utils.mm(prefix + "<red>There is no arena with the name " + name + "!"));
             return;
         }
-        sender.sendMessage(arena.toString());
+
+        sender.sendMessage(Utils.mm(prefix + "<yellow>==== Information for arena <white>" + arena.getName() + " ===="));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " world >World: <white>" + arena.getWorld()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " region >Region: <white>" + arena.getRegion()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " minPlayer >Min Player: <white>" + arena.getMinPlayer()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " maxPlayer >Max Player: <white>" + arena.getMaxPlayer()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " maxTags >Max Tags: <white>" + arena.getMaxTags()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " potatoTime >Potato time: <white>" + arena.getPotatoTime()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " reducePerTag >Reduce per Tag: <white>" + arena.getReducePerTag()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " saveTime >Savetime: <white>" + arena.getSaveTime()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " active >Active: <white>" + arena.isActive()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " lobbyPoint >Lobby point: <white>" + Utils.locationAsString(arena.getLobbyPoint())));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " gamePoint >Game point: <white>" + Utils.locationAsString(arena.getGamePoint())));
+        sender.sendMessage(Utils.mm(prefix + "<yellow>Click to edit value."));
     }
 
     @Override
