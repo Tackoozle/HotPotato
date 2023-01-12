@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class SetCommand extends CustomCommand{
+public class SetCommand extends CustomCommand {
     @Override
     protected boolean checkPermission(CommandSender sender) {
         return Permissions.ADMIN.check(sender);
@@ -243,22 +243,22 @@ public class SetCommand extends CustomCommand{
     @Override
     protected List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> options = Arrays.asList(
-                "minPlayer", "maxPlayer", "countdown", "reducePerTag", "potatoTime", "maxTags", "saveTime",
-                "lobbyPoint", "gamePoint", "sign",
-                "active",
-                "region", "world", "barColor", "barStyle");
+            "minPlayer", "maxPlayer", "countdown", "reducePerTag", "potatoTime", "maxTags", "saveTime",
+            "lobbyPoint", "gamePoint", "sign",
+            "active",
+            "region", "world", "barColor", "barStyle");
         switch (args.length) {
             case 1:
                 return HotPotato.getInstance().getManager().getArenas().stream()
-                        .map(Arena::getName)
-                        .filter(e -> e.startsWith(args[0]))
-                        .sorted(String.CASE_INSENSITIVE_ORDER)
-                        .collect(Collectors.toList());
+                    .map(Arena::getName)
+                    .filter(e -> e.startsWith(args[0]))
+                    .sorted(String.CASE_INSENSITIVE_ORDER)
+                    .collect(Collectors.toList());
             case 2:
                 return options.stream()
-                        .filter(e -> e.startsWith(args[1]))
-                        .sorted(String.CASE_INSENSITIVE_ORDER)
-                        .collect(Collectors.toList());
+                    .filter(e -> e.startsWith(args[1]))
+                    .sorted(String.CASE_INSENSITIVE_ORDER)
+                    .collect(Collectors.toList());
             case 3:
                 switch (args[1].toLowerCase()) {
                     case "minplayer":
@@ -266,8 +266,8 @@ public class SetCommand extends CustomCommand{
                     case "countdown":
                     case "maxTags":
                         return IntStream.range(1, 100)
-                                .mapToObj(String::valueOf)
-                                .collect(Collectors.toList());
+                            .mapToObj(String::valueOf)
+                            .collect(Collectors.toList());
                     case "lobbypoint":
                     case "gamepoint":
                         return List.of("here");

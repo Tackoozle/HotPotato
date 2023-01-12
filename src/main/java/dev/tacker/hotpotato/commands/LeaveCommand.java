@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class LeaveCommand extends CustomCommand{
+public class LeaveCommand extends CustomCommand {
     @Override
     protected boolean checkPermission(CommandSender sender) {
         return Permissions.USE.check(sender);
@@ -76,9 +76,9 @@ public class LeaveCommand extends CustomCommand{
                 if (!Permissions.ADMIN.check(sender))
                     break;
                 return HotPotato.getInstance().getServer().getOnlinePlayers().stream()
-                        .map(HumanEntity::getName)
-                        .sorted(String.CASE_INSENSITIVE_ORDER)
-                        .collect(Collectors.toList());
+                    .map(HumanEntity::getName)
+                    .sorted(String.CASE_INSENSITIVE_ORDER)
+                    .collect(Collectors.toList());
         }
         return new ArrayList<>();
     }

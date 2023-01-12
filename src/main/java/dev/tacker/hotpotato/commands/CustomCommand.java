@@ -17,11 +17,6 @@ public abstract class CustomCommand {
 
     protected abstract List<String> tabComplete(CommandSender sender, String[] args);
 
-    @Override
-    public int hashCode() {
-        return getCommandString().hashCode();
-    }
-
     public boolean process(CommandSender sender, String[] args) {
         if (checkPermission(sender)) {
             execute(sender, args);

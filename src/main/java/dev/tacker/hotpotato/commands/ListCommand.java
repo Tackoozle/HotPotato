@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListCommand extends CustomCommand{
+public class ListCommand extends CustomCommand {
     @Override
     protected boolean checkPermission(CommandSender sender) {
         return Permissions.ADMIN.check(sender);
@@ -33,7 +33,8 @@ public class ListCommand extends CustomCommand{
             return;
         }
         for (Arena arena : arenaList) {
-            sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<white><click:run_command:/hotpotato info " + arena.getName() + ">>" + arena.getName() + "</click><click:run_command:/hotpotato teleport " + arena.getName() + "><blue> [TP]</click>"));
+            sender.sendMessage(Utils.mm(HotPotato.getInstance()
+                .getPrefix() + "<white><click:run_command:/hotpotato info " + arena.getName() + ">>" + arena.getName() + "</click><click:run_command:/hotpotato teleport " + arena.getName() + "><blue> [TP]</click>"));
         }
     }
 

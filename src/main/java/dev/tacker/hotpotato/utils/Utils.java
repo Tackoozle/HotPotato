@@ -35,7 +35,7 @@ public class Utils {
     }
 
     /**
-     * saves location from configsection with given key
+     * saves location to configsection with given key
      */
     public static void saveLocation(ConfigurationSection y, String key, Location location, boolean pitchyaw) {
         if (location == null)
@@ -50,6 +50,9 @@ public class Utils {
         }
     }
 
+    /**
+     * returns signlocation from configsection with given key
+     */
     public static Location loadSignLocation(ConfigurationSection y, World w, String key) {
         if (!y.getKeys(false).contains(key))
             return null;
@@ -59,6 +62,9 @@ public class Utils {
         return new Location(w, x, yy, z);
     }
 
+    /**
+     * saves sign location to configsection with given key
+     */
     public static void saveSignLocation(ConfigurationSection y, String key, Location location) {
         if (location == null)
             return;
@@ -104,9 +110,9 @@ public class Utils {
     public static String locationAsString(Location l) {
         if (l == null)
             return "- not set -";
-        double x = Math.round(l.getX()*100.0/100.0);
-        double y = Math.round(l.getX()*100.0/100.0);
-        double z = Math.round(l.getX()*100.0/100.0);
+        double x = Math.round(l.getX() * 100.0 / 100.0);
+        double y = Math.round(l.getX() * 100.0 / 100.0);
+        double z = Math.round(l.getX() * 100.0 / 100.0);
         return "X: " + x + ", Y: " + y + ", Z: " + z + ", World: " + l.getWorld().getName();
     }
 }

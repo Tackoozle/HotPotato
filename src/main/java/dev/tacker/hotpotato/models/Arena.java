@@ -115,8 +115,8 @@ public class Arena {
         int maxTags = yaml.getInt("maxTags");
         double saveTime = yaml.getDouble("saveTime");
         return new Arena(name, world, region, minPlayer, maxPlayer, active,
-                lobbyPoint, gamePoint, barStyle, barColor, potatoTime,
-                reducePerTag, countdown, maxTags, saveTime);
+            lobbyPoint, gamePoint, barStyle, barColor, potatoTime,
+            reducePerTag, countdown, maxTags, saveTime);
     }
 
     /**
@@ -151,8 +151,8 @@ public class Arena {
         this.countdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(HotPotato.getInstance(), () -> {
             for (Player p : alive) {
                 p.showTitle(Title.title(Utils.mm("Starting in.."),
-                        Utils.mm(String.valueOf(countdown)),
-                        Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1000), Duration.ofMillis(500))));
+                    Utils.mm(String.valueOf(countdown)),
+                    Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1000), Duration.ofMillis(500))));
             }
             countdown--;
             if (countdown <= 3) {
@@ -172,8 +172,8 @@ public class Arena {
                     bossBar.addPlayer(p);
                     team.addEntry(p.getName());
                     p.showTitle(Title.title(Utils.mm("Good luck!"),
-                            Utils.mm("<gold>" + potato.getName() + " got the potato!"),
-                            Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1000), Duration.ofMillis(500))));
+                        Utils.mm("<gold>" + potato.getName() + " got the potato!"),
+                        Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1000), Duration.ofMillis(500))));
                 }
                 potatoTimer();
             }
@@ -704,25 +704,25 @@ public class Arena {
     @Override
     public String toString() {
         return "Arena{" +
-                "name='" + name + '\'' +
-                ", potatoTime=" + potatoTime +
-                ", reducePerTag=" + reducePerTag +
-                ", world='" + world + '\'' +
-                ", region='" + region + '\'' +
-                ", minPlayer=" + minPlayer +
-                ", maxPlayer=" + maxPlayer +
-                ", active=" + active +
-                ", lobbyPoint=" + lobbyPoint +
-                ", gamePoint=" + gamePoint +
-                ", barStyle=" + barStyle +
-                ", barColor=" + barColor +
-                ", countdown=" + countdown +
-                ", maxTags=" + maxTags +
-                ", saveTime=" + saveTime +
-                ", running=" + running +
-                ", started=" + started +
-                ", tagcount=" + tagcount +
-                ", joinable=" + joinable +
-                '}';
+            "name='" + name + '\'' +
+            ", potatoTime=" + potatoTime +
+            ", reducePerTag=" + reducePerTag +
+            ", world='" + world + '\'' +
+            ", region='" + region + '\'' +
+            ", minPlayer=" + minPlayer +
+            ", maxPlayer=" + maxPlayer +
+            ", active=" + active +
+            ", lobbyPoint=" + lobbyPoint +
+            ", gamePoint=" + gamePoint +
+            ", barStyle=" + barStyle +
+            ", barColor=" + barColor +
+            ", countdown=" + countdown +
+            ", maxTags=" + maxTags +
+            ", saveTime=" + saveTime +
+            ", running=" + running +
+            ", started=" + started +
+            ", tagcount=" + tagcount +
+            ", joinable=" + joinable +
+            '}';
     }
 }

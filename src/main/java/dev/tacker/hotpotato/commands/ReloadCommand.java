@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReloadCommand extends CustomCommand{
+public class ReloadCommand extends CustomCommand {
     @Override
     protected boolean checkPermission(CommandSender sender) {
         return Permissions.ADMIN.check(sender);
@@ -22,7 +22,6 @@ public class ReloadCommand extends CustomCommand{
     @Override
     public void printHelp(CommandSender sender) {
         sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - Reload plugin"));
-
     }
 
     @Override

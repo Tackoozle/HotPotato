@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class JoinCommand extends CustomCommand{
+public class JoinCommand extends CustomCommand {
     @Override
     protected boolean checkPermission(CommandSender sender) {
         return Permissions.USE.check(sender);
@@ -72,16 +72,16 @@ public class JoinCommand extends CustomCommand{
         switch (args.length) {
             case 1:
                 return HotPotato.getInstance().getManager().getArenas().stream()
-                        .map(Arena::getName)
-                        .filter(e -> e.startsWith(args[0]))
-                        .sorted(String.CASE_INSENSITIVE_ORDER)
-                        .collect(Collectors.toList());
+                    .map(Arena::getName)
+                    .filter(e -> e.startsWith(args[0]))
+                    .sorted(String.CASE_INSENSITIVE_ORDER)
+                    .collect(Collectors.toList());
             case 2:
                 if (!Permissions.ADMIN.check(sender))
                     break;
                 return HotPotato.getInstance().getServer().getOnlinePlayers().stream()
-                        .map(HumanEntity::getName)
-                        .collect(Collectors.toList());
+                    .map(HumanEntity::getName)
+                    .collect(Collectors.toList());
         }
         return new ArrayList<>();
     }

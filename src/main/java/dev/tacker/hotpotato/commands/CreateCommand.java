@@ -51,9 +51,9 @@ public class CreateCommand extends CustomCommand {
         }
         FileConfiguration c = HotPotato.getInstance().getConfig();
         Arena arena = new Arena(name, player.getWorld().getName(), "test", c.getInt("game.minPlayer"),
-                c.getInt("game.maxPlayer"), false, null, null, BarStyle.SEGMENTED_10,
-                BarColor.RED, c.getDouble("game.potatoTime"), c.getDouble("game.reducePerTag"),
-                c.getInt("game.countdown"), c.getInt("game.maxTags"), c.getInt("game.saveTime"));
+            c.getInt("game.maxPlayer"), false, null, null, BarStyle.SEGMENTED_10,
+            BarColor.RED, c.getDouble("game.potatoTime"), c.getDouble("game.reducePerTag"),
+            c.getInt("game.countdown"), c.getInt("game.maxTags"), c.getInt("game.saveTime"));
         HotPotato.getInstance().getManager().addArena(arena);
         if (arena.save()) {
             sender.sendMessage(Utils.mm(prefix + "<green>Arena " + arena.getName() + " created successfully!"));

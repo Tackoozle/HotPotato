@@ -20,11 +20,11 @@ import java.util.stream.Collectors;
 public class CommandHandler implements CommandExecutor, TabCompleter {
     private static final HashMap<String, CustomCommand> registeredCommands = new HashMap<>();
     private final Logging logging;
-    private final Component nopermission;
+    private final Component noPermission;
 
-    public CommandHandler(Logging logging, Component nopermission) {
+    public CommandHandler(Logging logging, Component noPermission) {
         this.logging = logging;
-        this.nopermission = nopermission;
+        this.noPermission = noPermission;
     }
 
     public void registerCmd(CustomCommand cmd) {
@@ -53,7 +53,7 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
             }
             args = Arrays.copyOfRange(args, 1, args.length);
             if (!cmd.process(sender, args)) {
-                sender.sendMessage(nopermission);
+                sender.sendMessage(noPermission);
             }
             return true;
         }
@@ -63,18 +63,18 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
         if (args.length == 0) {
-            return registeredCommands.keySet().stream()
-                    .filter(cmd -> registeredCommands.get(cmd).checkPermission(sender)).collect(Collectors.toList());
+            return registeredCommands.keySet().stream().filter(cmd -> registeredCommands.get(cmd).checkPermission(sender))
+                .collect(Collectors.toList());
         } else if (args.length == 1) {
-            return registeredCommands.keySet().stream()
-                    .filter(cmd -> cmd.startsWith(args[0].toLowerCase()))
-                    .filter(cmd -> registeredCommands.get(cmd).checkPermission(sender)).collect(Collectors.toList());
+            return registeredCommands.keySet().stream().filter(cmd -> cmd.startsWith(args[0].toLowerCase()))
+                .filter(cmd -> registeredCommands.get(cmd).checkPermission(sender))
+                .collect(Collectors.toList());
         } else {
-            List<String> matching_cmds = registeredCommands.keySet().stream()
-                    .filter(cmd -> cmd.equals(args[0].toLowerCase()))
-                    .filter(cmd -> registeredCommands.get(cmd).checkPermission(sender)).collect(Collectors.toList());
-            if (matching_cmds.size() == 1)
-                return registeredCommands.get(matching_cmds.get(0)).processTabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
+            List<String> matchingCmds = registeredCommands.keySet().stream().filter(cmd -> cmd.equals(args[0].toLowerCase()))
+                .filter(cmd -> registeredCommands.get(cmd).checkPermission(sender))
+                .collect(Collectors.toList());
+            if (matchingCmds.size() == 1)
+                return registeredCommands.get(matchingCmds.get(0)).processTabComplete(sender, Arrays.copyOfRange(args, 1, args.length));
             return new ArrayList<>();
         }
     }

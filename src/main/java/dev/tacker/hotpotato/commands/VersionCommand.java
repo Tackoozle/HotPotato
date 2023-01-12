@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender;
 import java.util.ArrayList;
 import java.util.List;
 
-public class VersionCommand extends CustomCommand{
+public class VersionCommand extends CustomCommand {
     @Override
     protected boolean checkPermission(CommandSender sender) {
         return Permissions.ADMIN.check(sender);
@@ -26,7 +26,9 @@ public class VersionCommand extends CustomCommand{
 
     @Override
     protected void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<green>Version: " + HotPotato.getInstance().getDescription().getVersion()));
+        sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<green>Version: " + HotPotato.getInstance()
+            .getDescription()
+            .getVersion()));
     }
 
     @Override
