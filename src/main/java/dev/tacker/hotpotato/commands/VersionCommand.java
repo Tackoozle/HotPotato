@@ -26,9 +26,8 @@ public class VersionCommand extends CustomCommand {
 
     @Override
     protected void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<green>Version: " + HotPotato.getInstance()
-            .getDescription()
-            .getVersion()));
+        sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<green>Version: " +
+            HotPotato.getInstance().getDescription().getVersion()));
     }
 
     @Override

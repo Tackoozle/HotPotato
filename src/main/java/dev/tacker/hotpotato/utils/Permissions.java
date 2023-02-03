@@ -10,7 +10,7 @@ public enum Permissions {
     ADMIN("hotpotato.admin"),
     ;
 
-    String perm;
+    final String perm;
 
     Permissions(String perm) {
         this.perm = perm;

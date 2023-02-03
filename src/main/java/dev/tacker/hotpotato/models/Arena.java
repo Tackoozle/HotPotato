@@ -55,6 +55,7 @@ public class Arena {
     private BarColor barColor;
     private int countdown;
     private int maxTags;
+    private Sound tagSound;
 
     //temporary vars
     private final List<Player> alive = new LinkedList<>();
@@ -74,7 +75,8 @@ public class Arena {
 
     public Arena(String name, String world, String region, int minPlayer, int maxPlayer, boolean active,
                  Location lobbyPoint, Location gamePoint, BarStyle barStyle, BarColor barColor,
-                 double potatoTime, double reducePerTag, int countdown, int maxTags, double saveTime) {
+                 double potatoTime, double reducePerTag, int countdown, int maxTags, double saveTime,
+                 Sound tagSound) {
         this.name = name;
         this.world = world;
         this.region = region;
@@ -91,6 +93,7 @@ public class Arena {
         this.countdownMax = countdown;
         this.maxTags = maxTags;
         this.saveTime = saveTime;
+        this.tagSound = tagSound;
         this.joinable = true;
     }
 
@@ -114,9 +117,10 @@ public class Arena {
         int countdown = yaml.getInt("countdown");
         int maxTags = yaml.getInt("maxTags");
         double saveTime = yaml.getDouble("saveTime");
+        Sound tagSound = Sound.valueOf(yaml.getString("tagSound"));
         return new Arena(name, world, region, minPlayer, maxPlayer, active,
             lobbyPoint, gamePoint, barStyle, barColor, potatoTime,
-            reducePerTag, countdown, maxTags, saveTime);
+            reducePerTag, countdown, maxTags, saveTime, tagSound);
     }
 
     /**
@@ -205,6 +209,9 @@ public class Arena {
         }, 0, 1);
     }
 
+    /**
+     * removes old potato
+     */
     private void removeOldPotato() {
         Player p = getPotato();
         if (p == null)
@@ -213,6 +220,10 @@ public class Arena {
         p.getInventory().clear();
     }
 
+    /**
+     * sets player as the new potatop
+     * @param p the player
+     */
     private void setNewPotato(Player p) {
         removeOldPotato();
         setPotato(p);
@@ -222,7 +233,7 @@ public class Arena {
         broadcast("<gold>" + p.getName() + " <white>got the potato!");
         p.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red><bold>You got the potato!"));
         for (Player players : alive) {
-            players.playSound(players.getLocation(), Sound.BLOCK_PISTON_EXTEND, 1, 1);
+            players.playSound(players.getLocation(), tagSound, 1, 1);
         }
     }
 
@@ -272,6 +283,7 @@ public class Arena {
 
     /**
      * removes player from arena
+     * @param player the player
      */
     public void leave(Player player) {
         if (!alive.contains(player)) {
@@ -302,7 +314,8 @@ public class Arena {
     }
 
     /**
-     * add player to arena
+     * adds player to the arena
+     * @param player the player
      */
     public void join(Player player) {
         if (!active) {
@@ -342,15 +355,22 @@ public class Arena {
         potatoTimer();
     }
 
+    /**
+     * tags the player as saved
+     * @param player the player
+     */
     private void addSaved(Player player) {
         if (saveTime == 0)
             return;
         saved.add(player);
-        Bukkit.getScheduler().runTaskLater(HotPotato.getInstance(), () -> {
-            saved.remove(player);
-        }, (long) (saveTime * 20));
+        Bukkit.getScheduler().runTaskLater(HotPotato.getInstance(), () -> saved.remove(player), (long) (saveTime * 20));
     }
 
+    /**
+     * checks if player is still saved
+     * @param player the player
+     * @return true, if player cant be tagged due to savetime
+     */
     public boolean isSaved(Player player) {
         return saved.contains(player);
     }
@@ -371,33 +391,49 @@ public class Arena {
         bossBar.setVisible(true);
         scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         team = scoreboard.getTeam("hotpotato_" + name);
-        if (team != null)
-            team.unregister();
-        team = scoreboard.registerNewTeam("hotpotato_" + name);
+        if (team == null)
+            team = scoreboard.registerNewTeam("hotpotato_" + name);
         team.color(NamedTextColor.GOLD);
     }
 
+    /**
+     * removes team and bossbar from arena
+     */
     private void unprepareArena() {
-        if (team != null)
+        try  {
             team.unregister();
+        } catch (Exception ignored) {
+        }
         if (bossBar != null)
             bossBar.removeAll();
         bossBar = null;
     }
 
+    /**
+     * removes the player from the arena bossbar
+     * @param player the player
+     */
     private void removePlayerFromBossBar(Player player) {
         if (bossBar != null && bossBar.getPlayers().contains(player))
             bossBar.removePlayer(player);
     }
 
+    /**
+     * removes the player from the arena team
+     * @param player the player
+     */
     private void removePlayerFromTeam(Player player) {
-        if (team != null && team.hasEntry(player.getName()))
+        if (team == null)
+            return;
+        if (scoreboard.getTeam("hotpotato_" + name) == null)
+            return;
+        if (team.hasEntry(player.getName()))
             team.removeEntry(player.getName());
     }
 
     /**
      * fills hotbar of player with potatoes
-     * @param player
+     * @param player the player
      */
     private void fillHotbar(Player player) {
         Inventory inv = player.getInventory();
@@ -407,6 +443,10 @@ public class Arena {
         }
     }
 
+    /**
+     * heals, feeds, .. the player
+     * @param p the player
+     */
     private void preparePlayer(Player p) {
         p.setHealth(20);
         p.setSaturation(20);
@@ -473,6 +513,10 @@ public class Arena {
             sender.sendMessage(Utils.mm(prefix + "<red>maxtags * reducepertag is greater than potatotime!"));
             ok = false;
         }
+        if (tagSound == null) {
+            sender.sendMessage(Utils.mm(prefix + "<red>no tagSound is set"));
+            ok = false;
+        }
         return ok;
     }
 
@@ -493,6 +537,10 @@ public class Arena {
         }
     }
 
+    /**
+     * saves the config section
+     * @param y the section
+     */
     private void save(ConfigurationSection y) {
         y.set("name", name);
         y.set("world", world);
@@ -509,6 +557,7 @@ public class Arena {
         y.set("countdown", countdown);
         y.set("maxTags", maxTags);
         y.set("saveTime", saveTime);
+        y.set("tagSound", tagSound.name());
     }
 
     /*public boolean isInsideRegion(Location location) {
@@ -701,12 +750,21 @@ public class Arena {
         this.saveTime = saveTime;
     }
 
+    public Sound getTagSound() {
+        return tagSound;
+    }
+
+    public void setTagSound(Sound tagSound) {
+        this.tagSound = tagSound;
+    }
+
     @Override
     public String toString() {
         return "Arena{" +
             "name='" + name + '\'' +
             ", potatoTime=" + potatoTime +
             ", reducePerTag=" + reducePerTag +
+            ", saveTime=" + saveTime +
             ", world='" + world + '\'' +
             ", region='" + region + '\'' +
             ", minPlayer=" + minPlayer +
@@ -718,10 +776,10 @@ public class Arena {
             ", barColor=" + barColor +
             ", countdown=" + countdown +
             ", maxTags=" + maxTags +
-            ", saveTime=" + saveTime +
-            ", running=" + running +
+            ", tagSound=" + tagSound +
             ", started=" + started +
             ", tagcount=" + tagcount +
+            ", countdownMax=" + countdownMax +
             ", joinable=" + joinable +
             '}';
     }

@@ -42,6 +42,10 @@ public class Manager {
         }
     }
 
+
+    /**
+     * stops all arenas
+     */
     public void disable() {
         for (Arena arena : arenas) {
             arena.stop();

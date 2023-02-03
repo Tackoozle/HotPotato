@@ -4,6 +4,7 @@ import dev.tacker.hotpotato.HotPotato;
 import dev.tacker.hotpotato.models.Arena;
 import dev.tacker.hotpotato.utils.Permissions;
 import dev.tacker.hotpotato.utils.Utils;
+import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.command.CommandSender;
@@ -53,7 +54,7 @@ public class CreateCommand extends CustomCommand {
         Arena arena = new Arena(name, player.getWorld().getName(), "test", c.getInt("game.minPlayer"),
             c.getInt("game.maxPlayer"), false, null, null, BarStyle.SEGMENTED_10,
             BarColor.RED, c.getDouble("game.potatoTime"), c.getDouble("game.reducePerTag"),
-            c.getInt("game.countdown"), c.getInt("game.maxTags"), c.getInt("game.saveTime"));
+            c.getInt("game.countdown"), c.getInt("game.maxTags"), c.getInt("game.saveTime"), Sound.BLOCK_NOTE_BLOCK_PLING);
         HotPotato.getInstance().getManager().addArena(arena);
         if (arena.save()) {
             sender.sendMessage(Utils.mm(prefix + "<green>Arena " + arena.getName() + " created successfully!"));

@@ -33,7 +33,7 @@ public class TeleportCommand extends CustomCommand {
         String prefix = HotPotato.getInstance().getPrefix();
         if (args.length == 1) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(Utils.mm(prefix + "<red>Try it with /block teleport <arena> [player]"));
+                sender.sendMessage(Utils.mm(prefix + "<red>Try it with /hotpotato teleport <arena> [player]"));
                 return;
             }
             Player player = (Player) sender;

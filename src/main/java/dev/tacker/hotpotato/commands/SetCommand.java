@@ -5,6 +5,7 @@ import dev.tacker.hotpotato.models.Arena;
 import dev.tacker.hotpotato.utils.Permissions;
 import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -67,6 +68,7 @@ public class SetCommand extends CustomCommand {
         double doubl;
         BarStyle barStyle;
         BarColor barColor;
+        Sound tagSound;
         switch (o.toLowerCase()) {
             //check int
             case "minplayer":
@@ -234,6 +236,16 @@ public class SetCommand extends CustomCommand {
                 arena.setBarStyle(barStyle);
                 sender.sendMessage(Utils.mm(prefix + "<green>The barstyle " + v + " was set successfully!"));
                 break;
+            case "tagsound":
+                try {
+                    tagSound = Sound.valueOf(v);
+                } catch (IllegalArgumentException e) {
+                    sender.sendMessage(Utils.mm(prefix + "<red>There is no sound named " + v + "!"));
+                    return;
+                }
+                arena.setTagSound(tagSound);
+                sender.sendMessage(Utils.mm(prefix + "<green>The tagsound " + v + " was set successfully!"));
+                break;
             default:
                 sender.sendMessage(Utils.mm(prefix + "<red>There is no option with the name " + o + "!"));
         }
@@ -246,7 +258,7 @@ public class SetCommand extends CustomCommand {
             "minPlayer", "maxPlayer", "countdown", "reducePerTag", "potatoTime", "maxTags", "saveTime",
             "lobbyPoint", "gamePoint", "sign",
             "active",
-            "region", "world", "barColor", "barStyle");
+            "region", "world", "barColor", "barStyle", "tagSound");
         switch (args.length) {
             case 1:
                 return HotPotato.getInstance().getManager().getArenas().stream()
@@ -264,7 +276,7 @@ public class SetCommand extends CustomCommand {
                     case "minplayer":
                     case "maxplayer":
                     case "countdown":
-                    case "maxTags":
+                    case "maxtags":
                         return IntStream.range(1, 100)
                             .mapToObj(String::valueOf)
                             .collect(Collectors.toList());
@@ -276,9 +288,9 @@ public class SetCommand extends CustomCommand {
                     case "region":
                         //TODO: add all region from world
                         break;
-                    case "reducePerTag":
-                    case "potatoTime":
-                    case "saveTime":
+                    case "reducepertag":
+                    case "potatotime":
+                    case "savetime":
                         return new ArrayList<>();
                     case "world":
                         return Bukkit.getWorlds().stream().map(WorldInfo::getName).collect(Collectors.toList());
@@ -288,6 +300,8 @@ public class SetCommand extends CustomCommand {
                         return Arrays.stream(BarColor.values()).map(Enum::name).collect(Collectors.toList());
                     case "barstyle":
                         return Arrays.stream(BarStyle.values()).map(Enum::name).collect(Collectors.toList());
+                    case "tagsound":
+                        return Arrays.stream(Sound.values()).map(Enum::name).collect(Collectors.toList());
                 }
         }
         return new ArrayList<>();
