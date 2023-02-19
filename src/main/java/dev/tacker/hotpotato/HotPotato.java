@@ -12,14 +12,12 @@ import dev.tacker.hotpotato.commands.SetCommand;
 import dev.tacker.hotpotato.commands.TeleportCommand;
 import dev.tacker.hotpotato.commands.VersionCommand;
 import dev.tacker.hotpotato.listeners.PlayerListener;
-import dev.tacker.hotpotato.listeners.SignListener;
 import dev.tacker.hotpotato.models.Manager;
 import dev.tacker.hotpotato.utils.Logging;
 import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class HotPotato extends JavaPlugin {
@@ -28,7 +26,7 @@ public final class HotPotato extends JavaPlugin {
     private Logging logging;
     private Manager manager;
     private final String prefix = "<white>[<red>H<gray>P<white>] ";
-    public final NamespacedKey key = new NamespacedKey(this, "joinsign");
+    public final NamespacedKey key = new NamespacedKey(this, "hotpotato_joinsign");
 
     public HotPotato() {
         instance = this;
@@ -58,9 +56,7 @@ public final class HotPotato extends JavaPlugin {
     }
 
     public void listenerRegistration() {
-        PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new PlayerListener(), this);
-        pluginManager.registerEvents(new SignListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
     }
 
     public void commandRegistration() {
@@ -81,13 +77,13 @@ public final class HotPotato extends JavaPlugin {
     public void initConfig() {
         FileConfiguration config = this.getConfig();
         config.addDefault("debug", false);
-        config.addDefault("game.minPlayer", 2);
-        config.addDefault("game.maxPlayer", 64);
-        config.addDefault("game.countdown", 10);
-        config.addDefault("game.potatoTime", 30.0);
-        config.addDefault("game.reducePerTag", 1.0);
-        config.addDefault("game.maxTags", 25);
-        config.addDefault("game.saveTime", 3);
+        config.addDefault("defaults.minPlayer", 2);
+        config.addDefault("defaults.maxPlayer", 64);
+        config.addDefault("defaults.countdown", 10);
+        config.addDefault("defaults.potatoTime", 30.0);
+        config.addDefault("defaults.reducePerTag", 1.0);
+        config.addDefault("defaults.maxTags", 25);
+        config.addDefault("defaults.saveTime", 3);
         config.options().copyDefaults(true);
         this.saveConfig();
     }

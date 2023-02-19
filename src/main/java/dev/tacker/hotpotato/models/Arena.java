@@ -44,8 +44,6 @@ public class Arena {
     private double potatoTime;
     private double reducePerTag;
     private double saveTime;
-    private String world;
-    private String region;
     private int minPlayer;
     private int maxPlayer;
     private boolean active;
@@ -73,13 +71,11 @@ public class Arena {
     private Team team;
     private Scoreboard scoreboard;
 
-    public Arena(String name, String world, String region, int minPlayer, int maxPlayer, boolean active,
+    public Arena(String name, int minPlayer, int maxPlayer, boolean active,
                  Location lobbyPoint, Location gamePoint, BarStyle barStyle, BarColor barColor,
                  double potatoTime, double reducePerTag, int countdown, int maxTags, double saveTime,
                  Sound tagSound) {
         this.name = name;
-        this.world = world;
-        this.region = region;
         this.minPlayer = minPlayer;
         this.maxPlayer = maxPlayer;
         this.active = active;
@@ -103,8 +99,6 @@ public class Arena {
     public static Arena fromFile(File file) {
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
         String name = yaml.getString("name");
-        String world = yaml.getString("world");
-        String region = yaml.getString("region");
         int minPlayer = yaml.getInt("minPlayer");
         int maxPlayer = yaml.getInt("maxPlayer");
         boolean active = yaml.getBoolean("active");
@@ -118,7 +112,7 @@ public class Arena {
         int maxTags = yaml.getInt("maxTags");
         double saveTime = yaml.getDouble("saveTime");
         Sound tagSound = Sound.valueOf(yaml.getString("tagSound"));
-        return new Arena(name, world, region, minPlayer, maxPlayer, active,
+        return new Arena(name, minPlayer, maxPlayer, active,
             lobbyPoint, gamePoint, barStyle, barColor, potatoTime,
             reducePerTag, countdown, maxTags, saveTime, tagSound);
     }
@@ -196,6 +190,12 @@ public class Arena {
             @Override
             public void run() {
                 bossBar.setTitle(ChatColor.GOLD + getPotato().getName() + ChatColor.WHITE + " got the potato!");
+                if (progress > 1.0 || progress < 0.0) {
+                    log.error("Progress of arena " + getName() + " is not in range!");
+                    log.error("timeAfterTags: " + timeAfterTags + ", tagCount: " + tagcount + ", reducePerTag: " + reducePerTag);
+                    log.error("time: " + time + ", progress: " + progress);
+                    progress = 1;
+                }
                 bossBar.setProgress(progress);
                 for (Player p : alive) {
                     p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 40, 1, false, false, false));
@@ -203,7 +203,11 @@ public class Arena {
                 progress = progress - time;
                 if (progress <= 0) {
                     tagcount = 0;
-                    leave(getPotato());
+                    if (alive.size() != 0) {
+                        leave(getPotato());
+                    } else {
+                        end();
+                    }
                 }
             }
         }, 0, 1);
@@ -340,6 +344,8 @@ public class Arena {
         broadcast("<green>" + player.getName() + " joined the arena.");
         if (alive.size() >= minPlayer && !started) {
             startGame();
+        } else {
+            broadcast("<green>Waiting for more player to start the game!");
         }
     }
 
@@ -464,19 +470,6 @@ public class Arena {
             sender.sendMessage(Utils.mm(prefix + "<red>No name set!"));
             ok = false;
         }
-        if (world == null) {
-            sender.sendMessage(Utils.mm(prefix + "<red>World not set!"));
-            ok = false;
-        }
-        if (world != null && Bukkit.getWorlds().contains(world)) {
-            sender.sendMessage(Utils.mm(prefix + "<red>World is not existing!" + world));
-            //ok = false;
-        }
-        /*RegionManager rm = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(Bukkit.getWorld(world)));
-        if (rm == null || region == null || rm.getRegion(region) == null) {
-            sender.sendMessage(Utils.mm(prefix + "<red>Region not set or not existing!"));
-            ok = false;
-        }*/
         if (gamePoint == null) {
             sender.sendMessage(Utils.mm(prefix + "<red>No Location for game!"));
             ok = false;
@@ -543,8 +536,6 @@ public class Arena {
      */
     private void save(ConfigurationSection y) {
         y.set("name", name);
-        y.set("world", world);
-        y.set("region", region);
         y.set("active", active);
         y.set("minPlayer", minPlayer);
         y.set("maxPlayer", maxPlayer);
@@ -560,19 +551,6 @@ public class Arena {
         y.set("tagSound", tagSound.name());
     }
 
-    /*public boolean isInsideRegion(Location location) {
-        if (!world.equals(location.getWorld().getName()))
-            return false;
-        ProtectedRegion rg = getWGRegion();
-        BlockVector3 bv = BlockVector3.at(location.getX(), location.getY(), location.getZ());
-        return rg != null && rg.contains(bv);
-    }
-
-    public ProtectedRegion getWGRegion() {
-        RegionManager rm = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(Bukkit.getWorld(world)));
-        return rm == null ? null : rm.getRegion(region);
-    }*/
-
     public String getName() {
         return name;
     }
@@ -583,22 +561,6 @@ public class Arena {
 
     public void setRunning(boolean running) {
         this.running = running;
-    }
-
-    public String getWorld() {
-        return world;
-    }
-
-    public void setWorld(String world) {
-        this.world = world;
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        this.region = region;
     }
 
     public int getMinPlayer() {
@@ -765,8 +727,6 @@ public class Arena {
             ", potatoTime=" + potatoTime +
             ", reducePerTag=" + reducePerTag +
             ", saveTime=" + saveTime +
-            ", world='" + world + '\'' +
-            ", region='" + region + '\'' +
             ", minPlayer=" + minPlayer +
             ", maxPlayer=" + maxPlayer +
             ", active=" + active +

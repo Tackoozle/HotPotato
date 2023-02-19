@@ -21,7 +21,7 @@ public class ReloadCommand extends CustomCommand {
 
     @Override
     public void printHelp(CommandSender sender) {
-        sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - Reload plugin"));
+        sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - Reload the config"));
     }
 
     @Override

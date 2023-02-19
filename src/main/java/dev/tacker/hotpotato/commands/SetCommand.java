@@ -4,9 +4,7 @@ import dev.tacker.hotpotato.HotPotato;
 import dev.tacker.hotpotato.models.Arena;
 import dev.tacker.hotpotato.utils.Permissions;
 import dev.tacker.hotpotato.utils.Utils;
-import org.bukkit.Bukkit;
 import org.bukkit.Sound;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
@@ -14,7 +12,6 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.generator.WorldInfo;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
@@ -194,28 +191,6 @@ public class SetCommand extends CustomCommand {
                 }
                 break;
             //check string
-            case "world":
-                World w = Bukkit.getWorld(v);
-                if (w == null) {
-                    sender.sendMessage(Utils.mm(prefix + "<red>There is no world with the name " + v + "!"));
-                    return;
-                }
-                arena.setWorld(v);
-                sender.sendMessage(Utils.mm(prefix + "<green>The world " + v + " was set successfully!"));
-                break;
-            case "region":
-                arena.setRegion(v);
-                sender.sendMessage(Utils.mm(prefix + "<green>The region " + v + " was set successfully! (WIP)"));
-                break;
-                /*
-                RegionManager rm = WorldGuard.getInstance().getPlatform().getRegionContainer().get(new BukkitWorld(Bukkit.getWorld(arena.getWorld())));
-                if (rm == null || rm.getRegion(v) == null) {
-                    sender.sendMessage(Utils.mm(prefix + "<red>There is no region with the name " + v + "!"));
-                    return;
-                }
-                arena.setRegion(v);
-                sender.sendMessage(Utils.mm(prefix + "<green>The region " + v + " was set successfully!"));
-                */
             case "barcolor":
                 try {
                     barColor = BarColor.valueOf(v);
@@ -258,7 +233,7 @@ public class SetCommand extends CustomCommand {
             "minPlayer", "maxPlayer", "countdown", "reducePerTag", "potatoTime", "maxTags", "saveTime",
             "lobbyPoint", "gamePoint", "sign",
             "active",
-            "region", "world", "barColor", "barStyle", "tagSound");
+            "barColor", "barStyle", "tagSound");
         switch (args.length) {
             case 1:
                 return HotPotato.getInstance().getManager().getArenas().stream()
@@ -279,29 +254,38 @@ public class SetCommand extends CustomCommand {
                     case "maxtags":
                         return IntStream.range(1, 100)
                             .mapToObj(String::valueOf)
+                            .filter(e -> e.startsWith(args[2]))
+                            .sorted(String.CASE_INSENSITIVE_ORDER)
                             .collect(Collectors.toList());
                     case "lobbypoint":
                     case "gamepoint":
                         return List.of("here");
                     case "sign":
                         return Arrays.asList("add", "remove");
-                    case "region":
-                        //TODO: add all region from world
-                        break;
                     case "reducepertag":
                     case "potatotime":
                     case "savetime":
                         return new ArrayList<>();
-                    case "world":
-                        return Bukkit.getWorlds().stream().map(WorldInfo::getName).collect(Collectors.toList());
                     case "active":
                         return Arrays.asList("true", "false");
                     case "barcolor":
-                        return Arrays.stream(BarColor.values()).map(Enum::name).collect(Collectors.toList());
+                        return Arrays.stream(BarColor.values())
+                            .map(Enum::name)
+                            .filter(e -> e.startsWith(args[2]))
+                            .sorted(String.CASE_INSENSITIVE_ORDER)
+                            .collect(Collectors.toList());
                     case "barstyle":
-                        return Arrays.stream(BarStyle.values()).map(Enum::name).collect(Collectors.toList());
+                        return Arrays.stream(BarStyle.values())
+                            .map(Enum::name)
+                            .filter(e -> e.startsWith(args[2]))
+                            .sorted(String.CASE_INSENSITIVE_ORDER)
+                            .collect(Collectors.toList());
                     case "tagsound":
-                        return Arrays.stream(Sound.values()).map(Enum::name).collect(Collectors.toList());
+                        return Arrays.stream(Sound.values())
+                            .map(Enum::name)
+                            .filter(e -> e.startsWith(args[2]))
+                            .sorted(String.CASE_INSENSITIVE_ORDER)
+                            .collect(Collectors.toList());
                 }
         }
         return new ArrayList<>();

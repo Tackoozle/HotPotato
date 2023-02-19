@@ -41,14 +41,13 @@ public class InfoCommand extends CustomCommand {
         }
 
         sender.sendMessage(Utils.mm(prefix + "<yellow>==== Information for arena <white>" + arena.getName() + " ===="));
-        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " world >World: <white>" + arena.getWorld()));
-        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " region >Region: <white>" + arena.getRegion()));
         sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " minPlayer >Min Player: <white>" + arena.getMinPlayer()));
         sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " maxPlayer >Max Player: <white>" + arena.getMaxPlayer()));
         sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " maxTags >Max Tags: <white>" + arena.getMaxTags()));
         sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " potatoTime >Potato time: <white>" + arena.getPotatoTime()));
         sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " reducePerTag >Reduce per Tag: <white>" + arena.getReducePerTag()));
         sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " saveTime >Savetime: <white>" + arena.getSaveTime()));
+        sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " tagSound >Tagsound: <white>" + arena.getTagSound()));
         sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " active >Active: <white>" + arena.isActive()));
         sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " lobbyPoint >Lobby point: <white>" + Utils.locationAsString(arena.getLobbyPoint())));
         sender.sendMessage(Utils.mm(prefix + "<yellow><click:suggest_command:/hotpotato set " + arena.getName() + " gamePoint >Game point: <white>" + Utils.locationAsString(arena.getGamePoint())));
