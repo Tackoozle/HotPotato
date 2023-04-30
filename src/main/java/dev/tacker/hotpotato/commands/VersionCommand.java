@@ -1,8 +1,8 @@
 package dev.tacker.hotpotato.commands;
 
 import dev.tacker.hotpotato.HotPotato;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Permissions;
-import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -21,13 +21,12 @@ public class VersionCommand extends CustomCommand {
 
     @Override
     public void printHelp(CommandSender sender) {
-        sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - Shows pluginversion"));
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_HELP, getCommandString(), "Shows pluginversion"));
     }
 
     @Override
     protected void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<green>Version: " +
-            HotPotato.getInstance().getDescription().getVersion()));
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_VERSION, HotPotato.getInstance().getDescription().getVersion()));
     }
 
     @Override

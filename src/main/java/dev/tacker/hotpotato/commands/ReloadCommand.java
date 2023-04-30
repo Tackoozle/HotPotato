@@ -1,8 +1,8 @@
 package dev.tacker.hotpotato.commands;
 
 import dev.tacker.hotpotato.HotPotato;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Permissions;
-import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -21,13 +21,13 @@ public class ReloadCommand extends CustomCommand {
 
     @Override
     public void printHelp(CommandSender sender) {
-        sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - Reload the config"));
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_HELP, getCommandString(), "Reload Config"));
     }
 
     @Override
     protected void execute(CommandSender sender, String[] args) {
         HotPotato.getInstance().reload();
-        sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<green>Plugin reloaded."));
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_RELOAD));
     }
 
     @Override

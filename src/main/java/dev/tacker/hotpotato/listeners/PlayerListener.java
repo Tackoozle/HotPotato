@@ -2,8 +2,8 @@ package dev.tacker.hotpotato.listeners;
 
 import dev.tacker.hotpotato.HotPotato;
 import dev.tacker.hotpotato.models.Arena;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Permissions;
-import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
@@ -34,6 +34,7 @@ public class PlayerListener implements Listener {
         Arena arena = HotPotato.getInstance().getManager().getArena(event.getPlayer());
         if (arena == null)
             return;
+        event.setCancelled(true);
         arena.leave(event.getPlayer());
     }
 
@@ -107,7 +108,7 @@ public class PlayerListener implements Listener {
             return;
 
         if (!Permissions.USE.check(event.getPlayer())) {
-            event.getPlayer().sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>You dont have permission to do this!"));
+            event.getPlayer().sendMessage(Locale.get(Locale.MessageKey.ERROR_NO_PERM));
             return;
         }
 

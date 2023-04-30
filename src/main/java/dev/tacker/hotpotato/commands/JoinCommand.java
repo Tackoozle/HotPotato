@@ -2,8 +2,8 @@ package dev.tacker.hotpotato.commands;
 
 import dev.tacker.hotpotato.HotPotato;
 import dev.tacker.hotpotato.models.Arena;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Permissions;
-import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.HumanEntity;
@@ -26,7 +26,7 @@ public class JoinCommand extends CustomCommand {
 
     @Override
     public void printHelp(CommandSender sender) {
-        sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - Joins a game"));
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_HELP, getCommandString(), "Joins a game"));
     }
 
     @Override
@@ -34,37 +34,37 @@ public class JoinCommand extends CustomCommand {
         String prefix = HotPotato.getInstance().getPrefix();
         if (args.length == 1) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(Utils.mm(prefix + "<red>Try it with /HotPotato join <arena> [Player]"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_PLAYER_ONLY_OR_TRY, "/hotpotato join <arena> [player]"));
                 return;
             }
             Player player = (Player) sender;
             String a = args[0];
             Arena arena = HotPotato.getInstance().getManager().getArena(a);
             if (arena == null) {
-                sender.sendMessage(Utils.mm(prefix + "<red>There is no arena with the name " + a + "!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_NOT_FOUND, a));
                 return;
             }
             arena.join(player);
         } else if (args.length == 2) {
             if (!Permissions.ADMIN.check(sender)) {
-                sender.sendMessage(Utils.mm(prefix + "<red>You dont have permission to do this!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_NO_PERM));
                 return;
             }
             String p = args[1];
             Player player = Bukkit.getPlayer(p);
             if (player == null) {
-                sender.sendMessage(Utils.mm(prefix + "<red>There is no player with the name " + p + "!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.PLAYER_MISSING, p));
                 return;
             }
             String a = args[0];
             Arena arena = HotPotato.getInstance().getManager().getArena(a);
             if (arena == null) {
-                sender.sendMessage(Utils.mm(prefix + "<red>There is no arena with the name " + a + "!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_NOT_FOUND, a));
                 return;
             }
             arena.join(player);
         } else
-            sender.sendMessage(Utils.mm(prefix + "<red>Try it with /hotpotato join <arena> [Player]"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_WRONG_COMMAND, "/hotpotato join <arena> [player]"));
     }
 
     @Override

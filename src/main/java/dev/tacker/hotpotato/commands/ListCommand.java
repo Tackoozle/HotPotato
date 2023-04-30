@@ -2,6 +2,7 @@ package dev.tacker.hotpotato.commands;
 
 import dev.tacker.hotpotato.HotPotato;
 import dev.tacker.hotpotato.models.Arena;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Permissions;
 import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.command.CommandSender;
@@ -22,19 +23,21 @@ public class ListCommand extends CustomCommand {
 
     @Override
     public void printHelp(CommandSender sender) {
-        sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - List all arenas"));
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_HELP, getCommandString(), "List all arenas"));
     }
 
     @Override
     protected void execute(CommandSender sender, String[] args) {
         List<Arena> arenaList = HotPotato.getInstance().getManager().getArenas();
         if (arenaList.isEmpty()) {
-            sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>There are no arenas!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_NONE_FOUND));
             return;
         }
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_LIST_HEADER));
         for (Arena arena : arenaList) {
-            sender.sendMessage(Utils.mm(HotPotato.getInstance()
-                .getPrefix() + "<white><click:run_command:/hotpotato info " + arena.getName() + ">>" + arena.getName() + "</click><click:run_command:/hotpotato teleport " + arena.getName() + "><blue> [TP]</click>"));
+            sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<white><click:run_command:/hotpotato info "
+                + arena.getName() + ">>" + arena.getName() + "</click><click:run_command:/hotpotato teleport "
+                + arena.getName() + "><blue> [TP]</click>"));
         }
     }
 

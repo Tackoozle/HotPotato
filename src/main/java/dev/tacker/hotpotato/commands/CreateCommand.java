@@ -2,8 +2,8 @@ package dev.tacker.hotpotato.commands;
 
 import dev.tacker.hotpotato.HotPotato;
 import dev.tacker.hotpotato.models.Arena;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Permissions;
-import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -27,27 +27,26 @@ public class CreateCommand extends CustomCommand {
 
     @Override
     public void printHelp(CommandSender sender) {
-        sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - Creates an arena"));
-
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_HELP, getCommandString(), "Creates an arena"));
     }
 
     @Override
     protected void execute(CommandSender sender, String[] args) {
         String prefix = HotPotato.getInstance().getPrefix();
         if (args.length != 1) {
-            sender.sendMessage(Utils.mm(prefix + "<red>Wrong arguments!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_WRONG_COMMAND, "/hotpotato create <name>"));
             return;
         }
 
         if (!(sender instanceof Player)) {
-            sender.sendMessage(Utils.mm(prefix + "<red>Ingame only command!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_PLAYER_ONLY));
             return;
         }
         Player player = (Player) sender;
 
         String name = args[0];
         if (HotPotato.getInstance().getManager().getArena(name) != null) {
-            sender.sendMessage(Utils.mm(prefix + "<red>There is already an arena with the name " + name + "!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_NAME_ALREADY_TAKEN, name));
             return;
         }
         FileConfiguration c = HotPotato.getInstance().getConfig();
@@ -58,10 +57,10 @@ public class CreateCommand extends CustomCommand {
         HotPotato.getInstance().getManager().addArena(arena);
 
         if (arena.save()) {
-            sender.sendMessage(Utils.mm(prefix + "<green>Arena " + arena.getName() + " created successfully!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_CREATED, arena.getName()));
         } else {
             HotPotato.getInstance().getManager().removeArena(arena);
-            sender.sendMessage(Utils.mm(prefix + "<red>There was error while saving arena " + arena.getName() + "!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_ERROR_SAVING, arena.getName()));
         }
     }
 

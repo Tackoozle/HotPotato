@@ -1,8 +1,7 @@
 package dev.tacker.hotpotato.commands;
 
-import dev.tacker.hotpotato.HotPotato;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Logging;
-import dev.tacker.hotpotato.utils.Utils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -48,12 +47,12 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
         if (args[0] != null) {
             CustomCommand cmd = registeredCommands.get(args[0].toLowerCase());
             if (cmd == null) {
-                sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>Unknown command!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_NO_COMMAND, args[0]));
                 return false;
             }
             args = Arrays.copyOfRange(args, 1, args.length);
             if (!cmd.process(sender, args)) {
-                sender.sendMessage(noPermission);
+                sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_NO_PERM));
             }
             return true;
         }

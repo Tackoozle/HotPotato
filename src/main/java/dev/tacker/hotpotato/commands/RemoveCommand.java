@@ -2,8 +2,8 @@ package dev.tacker.hotpotato.commands;
 
 import dev.tacker.hotpotato.HotPotato;
 import dev.tacker.hotpotato.models.Arena;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Permissions;
-import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.command.CommandSender;
 
 import java.util.ArrayList;
@@ -23,23 +23,23 @@ public class RemoveCommand extends CustomCommand {
 
     @Override
     public void printHelp(CommandSender sender) {
-        sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - Removes an arena"));
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_HELP, getCommandString(), "Removes an arena"));
     }
 
     @Override
     protected void execute(CommandSender sender, String[] args) {
         if (args.length != 1) {
-            sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>Try it with /hotpotato remove <arena>"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_WRONG_COMMAND, "/hotpotato remove <arena>"));
             return;
         }
         String name = args[0];
         Arena arena = HotPotato.getInstance().getManager().getArena(name);
         if (arena == null) {
-            sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>There is no arena with the name " + name + "!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_NOT_FOUND,name));
             return;
         }
         HotPotato.getInstance().getManager().removeArena(arena);
-        sender.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>Arena successfully deleted!"));
+        sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_DELETED, arena.getName()));
     }
 
     @Override

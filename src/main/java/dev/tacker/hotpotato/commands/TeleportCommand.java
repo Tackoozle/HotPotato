@@ -2,8 +2,8 @@ package dev.tacker.hotpotato.commands;
 
 import dev.tacker.hotpotato.HotPotato;
 import dev.tacker.hotpotato.models.Arena;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Permissions;
-import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -25,7 +25,7 @@ public class TeleportCommand extends CustomCommand {
 
     @Override
     public void printHelp(CommandSender sender) {
-        sender.sendMessage(Utils.mm("<yellow>/hotpotato " + getCommandString() + "<white> - Teleports to arena"));
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_HELP, getCommandString(), "Teleports to arena"));
     }
 
     @Override
@@ -33,22 +33,22 @@ public class TeleportCommand extends CustomCommand {
         String prefix = HotPotato.getInstance().getPrefix();
         if (args.length == 1) {
             if (!(sender instanceof Player)) {
-                sender.sendMessage(Utils.mm(prefix + "<red>Try it with /hotpotato teleport <arena> [player]"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_PLAYER_ONLY_OR_TRY, "/hotpotato teleport <arena> [player]"));
                 return;
             }
             Player player = (Player) sender;
             String a = args[0];
             Arena arena = HotPotato.getInstance().getManager().getArena(a);
             if (arena == null) {
-                sender.sendMessage(Utils.mm(prefix + "<red>There is no arena with the name " + a + "!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_NOT_FOUND, a));
                 return;
             }
             if (arena.getLobbyPoint() == null) {
-                sender.sendMessage(Utils.mm(prefix + "<red>There is no lobbypoint set for arena " + arena.getName() + "!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_MISSING, "lobbyPoint"));
                 return;
             }
             player.teleport(arena.getLobbyPoint());
-            player.sendMessage(Utils.mm(prefix + "<green>Teleported you to arena " + arena.getName() + "!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_TELEPORTED, arena.getName()));
             return;
         }
         if (args.length == 2) {
@@ -56,26 +56,27 @@ public class TeleportCommand extends CustomCommand {
             String p = args[1];
             Player player = Bukkit.getPlayerExact(p);
             if (player == null) {
-                sender.sendMessage(Utils.mm(prefix + "<red>There is no player with the name " + p + "!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.PLAYER_MISSING, p));
                 return;
             }
             Arena arena = HotPotato.getInstance().getManager().getArena(a);
             if (arena == null) {
-                sender.sendMessage(Utils.mm(prefix + "<red>There is no arena with the name " + a + "!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_NOT_FOUND, a));
                 return;
             }
             if (arena.getLobbyPoint() == null) {
-                sender.sendMessage(Utils.mm(prefix + "<red>There is no lobbypoint set for arena " + arena.getName() + "!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_MISSING, "lobbyPoint"));
                 return;
             }
             player.teleport(arena.getLobbyPoint());
-            sender.sendMessage(Utils.mm(prefix + "<green>Teleported" + player.getName() + " to arena " + arena.getName() + "!"));
+
+            sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_TELEPORTED_OTHER, arena.getName(), player.getName()));
             if (!sender.getName().equals(player.getName())) {
-                player.sendMessage(Utils.mm(prefix + "<green>You were teleported to the arena " + arena.getName() + "!"));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_TELEPORTED, arena.getName()));
             }
             return;
         }
-        sender.sendMessage(Utils.mm(prefix + "<red> Try it with /hotpotato teleport <arena> [player]"));
+        sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_WRONG_COMMAND, "/hotpotato teleport <arena> [player]"));
     }
 
     @Override

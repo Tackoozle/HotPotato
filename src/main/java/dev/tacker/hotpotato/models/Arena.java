@@ -1,6 +1,7 @@
 package dev.tacker.hotpotato.models;
 
 import dev.tacker.hotpotato.HotPotato;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Logging;
 import dev.tacker.hotpotato.utils.Utils;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -125,7 +126,7 @@ public class Arena {
         alive.forEach(p -> {
             preparePlayer(p);
             p.teleport(lobbyPoint);
-            p.sendMessage(Utils.mm("<red>Arenas has been stopped. Teleporting you to the lobby."));
+            p.sendMessage(Locale.get(Locale.MessageKey.ARENA_STOPPED));
         });
         end();
     }
@@ -148,8 +149,8 @@ public class Arena {
         countdown = countdownMax;
         this.countdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(HotPotato.getInstance(), () -> {
             for (Player p : alive) {
-                p.showTitle(Title.title(Utils.mm("Starting in.."),
-                    Utils.mm(String.valueOf(countdown)),
+                p.showTitle(Title.title(Locale.getNoPrefix(Locale.MessageKey.TITLE_COUNTDOWN),
+                    Locale.getNoPrefix(Locale.MessageKey.TITLE_COUNTDOWN_SUB, String.valueOf(countdown)),
                     Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1000), Duration.ofMillis(500))));
             }
             countdown--;
@@ -163,14 +164,14 @@ public class Arena {
                     return;
                 }
                 running = true;
-                broadcast("<green>Arena started. Good luck!");
+                broadcast(Locale.MessageKey.ARENA_STARTED);
                 prepareArena();
                 setNewPotato(pickRandomPlayer());
                 for (Player p : alive) {
                     bossBar.addPlayer(p);
                     team.addEntry(p.getName());
-                    p.showTitle(Title.title(Utils.mm("Good luck!"),
-                        Utils.mm("<gold>" + potato.getName() + " got the potato!"),
+                    p.showTitle(Title.title(Locale.getNoPrefix(Locale.MessageKey.TITLE_STARTED, potato.getName()),
+                        Locale.getNoPrefix(Locale.MessageKey.TITLE_STARTED_SUB, potato.getName()),
                         Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1000), Duration.ofMillis(500))));
                 }
                 potatoTimer();
@@ -190,11 +191,15 @@ public class Arena {
             @Override
             public void run() {
                 bossBar.setTitle(ChatColor.GOLD + getPotato().getName() + ChatColor.WHITE + " got the potato!");
-                if (progress > 1.0 || progress < 0.0) {
+                if (progress > 1.0) {
                     log.error("Progress of arena " + getName() + " is not in range!");
                     log.error("timeAfterTags: " + timeAfterTags + ", tagCount: " + tagcount + ", reducePerTag: " + reducePerTag);
                     log.error("time: " + time + ", progress: " + progress);
                     progress = 1;
+                }
+                if (progress < 0.0) {
+                    progress = 0;
+                    log.error(".qwe");
                 }
                 bossBar.setProgress(progress);
                 for (Player p : alive) {
@@ -202,7 +207,7 @@ public class Arena {
                 }
                 progress = progress - time;
                 if (progress <= 0) {
-                    tagcount = 0;
+                    tagcount = 1;
                     if (alive.size() != 0) {
                         leave(getPotato());
                     } else {
@@ -234,8 +239,8 @@ public class Arena {
         p.setGlowing(true);
         fillHotbar(p);
         p.getInventory().setHelmet(itemStack);
-        broadcast("<gold>" + p.getName() + " <white>got the potato!");
-        p.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red><bold>You got the potato!"));
+        broadcast(Locale.MessageKey.ARENA_POTATO, p.getName());
+        p.sendMessage(Locale.get(Locale.MessageKey.ARENA_POTATO_INFO));
         for (Player players : alive) {
             players.playSound(players.getLocation(), tagSound, 1, 1);
         }
@@ -244,15 +249,15 @@ public class Arena {
     /**
      * broadcast msg (adventure format) to all alive player
      */
-    private void broadcast(String msg) {
-        alive.forEach(p -> p.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + msg)));
+    private void broadcast(Locale.MessageKey key, Object... args) {
+        alive.forEach(p -> p.sendMessage(Locale.get(key, args)));
     }
 
     /**
      * broadcast msg (adventure format) to all dead player
      */
-    private void broadcastDead(String msg) {
-        dead.forEach(p -> p.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + msg)));
+    private void broadcastDead(Locale.MessageKey key, Object... args) {
+        dead.forEach(p -> p.sendMessage(Locale.get(key, args)));
     }
 
     /**
@@ -268,8 +273,7 @@ public class Arena {
     private void end() {
         if (alive.size() == 1) {
             Player p = alive.get(0);
-            p.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<gold>Gratz, you won!"));
-            broadcastDead("<gold>Player " + p.getName() + " won the arena " + name + "!");
+            broadcast(Locale.MessageKey.ARENA_WON, p.getName(), name);
             preparePlayer(p);
             p.teleport(lobbyPoint);
         }
@@ -280,7 +284,7 @@ public class Arena {
         joinable = true;
         potato = null;
         running = false;
-        tagcount = 0;
+        tagcount = 1;
         started = false;
         unprepareArena();
     }
@@ -291,13 +295,13 @@ public class Arena {
      */
     public void leave(Player player) {
         if (!alive.contains(player)) {
-            player.sendMessage(Utils.mm(prefix + "<red>You are not in the arena " + name + "!"));
+            player.sendMessage(Locale.get(Locale.MessageKey.PLAYER_NO_ARENA));
             return;
         }
         if (potato == player) {
-            player.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>You got potatoed and left the arena!"));
+            player.sendMessage(Locale.get(Locale.MessageKey.ARENA_POTATOED, player.getName()));
         } else {
-            player.sendMessage(Utils.mm(HotPotato.getInstance().getPrefix() + "<red>You left the arena."));
+            player.sendMessage(Locale.get(Locale.MessageKey.ARENA_LEFT, player.getName()));
         }
         alive.remove(player);
         dead.add(player);
@@ -310,10 +314,8 @@ public class Arena {
             return;
         }
         if (getPotato() == player) {
-            broadcast("<red>" + player.getName() + " left. Picking new potato..");
+            broadcast(Locale.MessageKey.ARENA_NEW_POTATO);
             setNewPotato(pickRandomPlayer());
-        } else {
-            broadcast("<red>" + player.getName() + " left the arena.");
         }
     }
 
@@ -323,29 +325,29 @@ public class Arena {
      */
     public void join(Player player) {
         if (!active) {
-            player.sendMessage(Utils.mm(prefix + "<red>The arena " + name + " is not active!"));
+            player.sendMessage(Locale.get(Locale.MessageKey.ARENA_NOT_ACTIVE, name));
             return;
         }
         if (!joinable) {
-            player.sendMessage(Utils.mm(prefix + "<red>The arena " + name + " is not joinable!"));
+            player.sendMessage(Locale.get(Locale.MessageKey.ARENA_NOT_JOINABLE, name));
             return;
         }
         if (alive.size() >= maxPlayer) {
-            player.sendMessage(Utils.mm(prefix + "<red>The arena " + name + " reached its player limit!"));
+            player.sendMessage(Locale.get(Locale.MessageKey.ARENA_LIMIT_REACHED, name));
             return;
         }
         if (alive.contains(player)) {
-            player.sendMessage(Utils.mm(prefix + "<red>You are already playing in arena " + name + "!"));
+            player.sendMessage(Locale.get(Locale.MessageKey.ARENA_ALREADY_PLAYING, name));
             return;
         }
         alive.add(player);
         preparePlayer(player);
         player.teleport(gamePoint);
-        broadcast("<green>" + player.getName() + " joined the arena.");
+        broadcast(Locale.MessageKey.ARENA_JOINED, player.getName());
         if (alive.size() >= minPlayer && !started) {
             startGame();
         } else {
-            broadcast("<green>Waiting for more player to start the game!");
+            broadcast(Locale.MessageKey.ARENA_WAITING);
         }
     }
 
@@ -406,7 +408,7 @@ public class Arena {
      * removes team and bossbar from arena
      */
     private void unprepareArena() {
-        try  {
+        try {
             team.unregister();
         } catch (Exception ignored) {
         }
@@ -456,7 +458,10 @@ public class Arena {
     private void preparePlayer(Player p) {
         p.setHealth(20);
         p.setSaturation(20);
+        p.setFoodLevel(20);
         p.setGlowing(false);
+        p.setExp(0f);
+        p.setLevel(0);
         p.setGameMode(GameMode.SURVIVAL);
         p.getInventory().clear();
     }
@@ -467,47 +472,47 @@ public class Arena {
     public boolean validate(CommandSender sender) {
         boolean ok = true;
         if (name == null) {
-            sender.sendMessage(Utils.mm(prefix + "<red>No name set!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION, "name"));
             ok = false;
         }
         if (gamePoint == null) {
-            sender.sendMessage(Utils.mm(prefix + "<red>No Location for game!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"gamePoint"));
             ok = false;
         }
         if (lobbyPoint == null) {
-            sender.sendMessage(Utils.mm(prefix + "<red>No Location for lobby!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"lobbyPoint"));
             ok = false;
         }
         if (maxPlayer == 0) {
-            sender.sendMessage(Utils.mm(prefix + "<red>Max players is not set!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"maxPlayer"));
             ok = false;
         }
         if (minPlayer == 0) {
-            sender.sendMessage(Utils.mm(prefix + "<red>Min players is not set!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"minPlayer"));
             ok = false;
         }
         if (minPlayer > maxPlayer) {
-            sender.sendMessage(Utils.mm(prefix + "<red>Minplayer is greater than maxplayer!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"minPlayer > maxPlayer"));
             ok = false;
         }
         if (countdown <= 0) {
-            sender.sendMessage(Utils.mm(prefix + "<red>Countdown is not allowed to be <=0!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"countDown <= 0"));
             ok = false;
         }
         if (reducePerTag <= 0) {
-            sender.sendMessage(Utils.mm(prefix + "<red>reducepertag is not allowed to be <=0!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"reducePerTag <=0"));
             ok = false;
         }
         if (potatoTime <= 0) {
-            sender.sendMessage(Utils.mm(prefix + "<red>potatotime is not allowed to be <=0!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"potatoTime <=0"));
             ok = false;
         }
         if ((maxTags * reducePerTag) > potatoTime) {
-            sender.sendMessage(Utils.mm(prefix + "<red>maxtags * reducepertag is greater than potatotime!"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"maxTags * reducePerTag > potatoTime!"));
             ok = false;
         }
         if (tagSound == null) {
-            sender.sendMessage(Utils.mm(prefix + "<red>no tagSound is set"));
+            sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"tagSound"));
             ok = false;
         }
         return ok;
@@ -515,7 +520,7 @@ public class Arena {
 
     /**
      * saves a arena to .yml file
-     * @return true if saved, false if error occured
+     * @return true if saved, false if error occured or not valid
      */
     public boolean save() {
         YamlConfiguration y = new YamlConfiguration();

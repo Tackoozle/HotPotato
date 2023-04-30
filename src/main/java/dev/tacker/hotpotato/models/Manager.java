@@ -30,11 +30,10 @@ public class Manager {
                 HotPotato.getInstance().getLogging().log("Enabling arena " + file.getName());
                 Arena arena = Arena.fromFile(file);
                 if (!arena.validate(Bukkit.getConsoleSender())) {
-                    HotPotato.getInstance().getLogging().error("Cant activate " + arena.getName() + "!");
-                    continue;
+                    HotPotato.getInstance().getLogging().error("Couldnt validate arena " + arena.getName() + "!");
                 }
                 arenas.add(arena);
-                HotPotato.getInstance().getLogging().debug("Arena " + arena.getName() + " successfully loaded!");
+                HotPotato.getInstance().getLogging().debug("Arena " + arena.getName() + " loaded..");
             } catch (Exception e) {
                 HotPotato.getInstance().getLogging().error("Error while loading an arena!");
                 e.printStackTrace();

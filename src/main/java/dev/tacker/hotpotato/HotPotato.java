@@ -13,8 +13,8 @@ import dev.tacker.hotpotato.commands.TeleportCommand;
 import dev.tacker.hotpotato.commands.VersionCommand;
 import dev.tacker.hotpotato.listeners.PlayerListener;
 import dev.tacker.hotpotato.models.Manager;
+import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Logging;
-import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -40,6 +40,7 @@ public final class HotPotato extends JavaPlugin {
         manager.loadAllArenas();
         listenerRegistration();
         commandRegistration();
+        Locale.setup();
         logging.log("HotPotato " + getDescription().getVersion() + " successfully enabled!");
     }
 
@@ -53,6 +54,7 @@ public final class HotPotato extends JavaPlugin {
         logging = new Logging("[HP] ", " = DEBUG = ", getConfig().getBoolean("debug"));
         manager.disable();
         manager.loadAllArenas();
+        Locale.setup();
     }
 
     public void listenerRegistration() {
@@ -60,7 +62,7 @@ public final class HotPotato extends JavaPlugin {
     }
 
     public void commandRegistration() {
-        CommandHandler cmd = new CommandHandler(logging, Utils.mm(prefix + "<red>You dont have permission to do this!"));
+        CommandHandler cmd = new CommandHandler(logging, Locale.get(Locale.MessageKey.ERROR_NO_PERM));
         cmd.registerCmd(new VersionCommand());
         cmd.registerCmd(new ReloadCommand());
         cmd.registerCmd(new LeaveCommand());
