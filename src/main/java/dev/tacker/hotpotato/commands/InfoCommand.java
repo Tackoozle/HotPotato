@@ -50,9 +50,11 @@ public class InfoCommand extends CustomCommand {
         sender.sendMessage(Locale.getWithCommand(Locale.MessageKey.COMMAND_INFO_VALUE, "<click:suggest_command:/hotpotato set " + arena.getName() + " reducePerTag >","reducePerTag", arena.getReducePerTag()));
         sender.sendMessage(Locale.getWithCommand(Locale.MessageKey.COMMAND_INFO_VALUE, "<click:suggest_command:/hotpotato set " + arena.getName() + " saveTime >","saveTime", arena.getSaveTime()));
         sender.sendMessage(Locale.getWithCommand(Locale.MessageKey.COMMAND_INFO_VALUE, "<click:suggest_command:/hotpotato set " + arena.getName() + " tagSound >","tagSound", arena.getTagSound()));
+        sender.sendMessage(Locale.getWithCommand(Locale.MessageKey.COMMAND_INFO_VALUE, "<click:suggest_command:/hotpotato set " + arena.getName() + " barColor >","barColor", arena.getBarColor()));
+        sender.sendMessage(Locale.getWithCommand(Locale.MessageKey.COMMAND_INFO_VALUE, "<click:suggest_command:/hotpotato set " + arena.getName() + " barStyle >","barStyle", arena.getBarStyle()));
         sender.sendMessage(Locale.getWithCommand(Locale.MessageKey.COMMAND_INFO_VALUE, "<click:suggest_command:/hotpotato set " + arena.getName() + " active >","active", arena.isActive()));
         sender.sendMessage(Locale.getWithCommand(Locale.MessageKey.COMMAND_INFO_VALUE, "<click:suggest_command:/hotpotato set " + arena.getName() + " lobbyPoint here>","lobbyPoint", Utils.locationAsString(arena.getLobbyPoint())));
-        sender.sendMessage(Locale.getWithCommand(Locale.MessageKey.COMMAND_INFO_VALUE, "<click:suggest_command:/hotpotato set " + arena.getName() + " gamePoint here >","gamePoint", Utils.locationAsString(arena.getGamePoint())));
+        sender.sendMessage(Locale.getWithCommand(Locale.MessageKey.COMMAND_INFO_VALUE, "<click:suggest_command:/hotpotato set " + arena.getName() + " gamePoint here>","gamePoint", Utils.locationAsString(arena.getGamePoint())));
         sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_INFO_EDIT));
     }
 

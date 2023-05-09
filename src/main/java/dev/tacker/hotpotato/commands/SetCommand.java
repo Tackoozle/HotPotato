@@ -143,7 +143,7 @@ public class SetCommand extends CustomCommand {
                     return;
                 }
                 arena.setLobbyPoint(player.getLocation());
-                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SETTING_SUCCESS, "lobbyPoint", player.getLocation()));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SETTING_SUCCESS, "lobbyPoint", Utils.locationAsString(player.getLocation())));
                 break;
             case "gamepoint":
                 if (!v.equalsIgnoreCase("here")) {
@@ -151,7 +151,7 @@ public class SetCommand extends CustomCommand {
                     return;
                 }
                 arena.setGamePoint(player.getLocation());
-                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SETTING_SUCCESS, "gamePoint", player.getLocation()));
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SETTING_SUCCESS, "gamePoint", Utils.locationAsString(player.getLocation())));
                 break;
             case "sign":
                 Block block = player.getTargetBlock(5);
@@ -162,14 +162,11 @@ public class SetCommand extends CustomCommand {
                 Sign sign = (Sign) block.getState();
                 if (v.equalsIgnoreCase("add")) {
                     sign.line(0, Utils.mm(HotPotato.getInstance().getPrefix()));
-                    sign.line(1, Utils.mm(arena.getName()));
+                    sign.line(1, Locale.getNoPrefix(Locale.MessageKey.SIGN_ARENA, arena.getName()));
                     sign.line(2, Locale.getNoPrefix(Locale.MessageKey.SIGN_LINE));
                     sign.getPersistentDataContainer().set(HotPotato.getInstance().key, PersistentDataType.STRING, arena.getName());
                     sign.update(true);
                     sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SIGN_ADD, arena.getName()));
-                } else if (v.equalsIgnoreCase("remove")) {
-                    sign.getPersistentDataContainer().remove(HotPotato.getInstance().key);
-                    sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SIGN_REMOVE, arena.getName()));
                 } else {
                     sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_WRONG_INPUT, v));
                     return;
@@ -268,7 +265,7 @@ public class SetCommand extends CustomCommand {
                     case "gamepoint":
                         return List.of("here");
                     case "sign":
-                        return Arrays.asList("add", "remove");
+                        return Arrays.asList("add");
                     case "reducepertag":
                     case "potatotime":
                     case "savetime":

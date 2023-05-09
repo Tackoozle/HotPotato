@@ -4,8 +4,11 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class Utils {
 
@@ -111,8 +114,16 @@ public class Utils {
         if (l == null)
             return "- not set -";
         double x = Math.round(l.getX() * 100.0 / 100.0);
-        double y = Math.round(l.getX() * 100.0 / 100.0);
-        double z = Math.round(l.getX() * 100.0 / 100.0);
+        double y = Math.round(l.getY() * 100.0 / 100.0);
+        double z = Math.round(l.getZ() * 100.0 / 100.0);
         return "X: " + x + ", Y: " + y + ", Z: " + z + ", World: " + l.getWorld().getName();
+    }
+
+    public static ItemStack getPotato() {
+        ItemStack is = new ItemStack(Material.BAKED_POTATO);
+        ItemMeta meta = is.getItemMeta();
+        meta.displayName(Utils.mm("<gold>Heiße Kartoffel"));
+        is.setItemMeta(meta);
+        return is;
     }
 }

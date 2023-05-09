@@ -27,10 +27,10 @@ public class Manager {
             if (!file.isFile())
                 continue;
             try {
-                HotPotato.getInstance().getLogging().log("Enabling arena " + file.getName());
+                HotPotato.getInstance().getLogging().debug("Loading arena " + file.getName());
                 Arena arena = Arena.fromFile(file);
                 if (!arena.validate(Bukkit.getConsoleSender())) {
-                    HotPotato.getInstance().getLogging().error("Couldnt validate arena " + arena.getName() + "!");
+                    HotPotato.getInstance().getLogging().debug("Couldnt validate arena " + arena.getName() + "!");
                 }
                 arenas.add(arena);
                 HotPotato.getInstance().getLogging().debug("Arena " + arena.getName() + " loaded..");
@@ -49,6 +49,7 @@ public class Manager {
         for (Arena arena : arenas) {
             arena.stop();
         }
+        arenas.clear();
     }
 
     /**

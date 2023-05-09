@@ -105,7 +105,6 @@ public class Locale {
         ARENA_NONE_FOUND("<red>There are no arenas"),
         ARENA_SETTING_SUCCESS("<green>You successfully changed {0} to {1}"),
         ARENA_SIGN_ADD("<green>Added a sign for arena {0}"),
-        ARENA_SIGN_REMOVE("<red>Removed a sign for arena {0}"),
         ARENA_DELETED("<red>Successfully removed arena {0}"),
         ARENA_CREATED("<green>Successfully created arena {0}"),
         ARENA_CREATED_2("<green>Click here to edit arena {0}"),
@@ -116,11 +115,11 @@ public class Locale {
         ARENA_TELEPORTED("<green>Teleported you to arena {0}"),
         ARENA_TELEPORTED_OTHER("<green>Teleported {1} to arena {0}"),
         ARENA_WON("<gold>Player {0} won the arena {1}"),
+        ARENA_DEATH("<red>You died.."),
         ARENA_POTATOED("Player {0} had the potato for too long and died.."),
         ARENA_LEFT("Player {0} left your arena"),
         ARENA_JOINED("Player {0} joined your arena"),
         ARENA_NEW_POTATO("<gold>Searching for new potato..."),
-        ARENA_WAITING("<white>Waiting for more player to start the game"),
 
         ARENA_STARTED("<green>The arena started! Good luck!"),
         ARENA_STOPPED("<red>The arena stopped!"),
@@ -140,6 +139,7 @@ public class Locale {
         TITLE_STARTED("<white>Good luck!"),
         TITLE_STARTED_SUB("<gold>{0} <red>got the potato!"),
 
+        SIGN_ARENA("<black>{0}"),
         SIGN_LINE("<black>Click to join!"),
 
         COMMAND_RELOAD("<green>Reloaded the plugin"),

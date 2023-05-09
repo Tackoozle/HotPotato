@@ -10,7 +10,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -20,7 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
@@ -36,8 +35,6 @@ import java.util.List;
 import java.util.Set;
 
 public class Arena {
-    private final ItemStack itemStack = new ItemStack(Material.BAKED_POTATO);
-    private final String prefix = HotPotato.getInstance().getPrefix();
     private final Logging log = HotPotato.getInstance().getLogging();
 
     //loaded stuff from .yml
@@ -62,8 +59,7 @@ public class Arena {
     private final Set<Player> saved = new HashSet<>();
     private boolean running;
     private boolean started;
-    private int tagcount;
-    private int countdownMax;
+    private int tagCount;
     private Player potato;
     private boolean joinable;
     private int potatoTask;
@@ -87,7 +83,6 @@ public class Arena {
         this.potatoTime = potatoTime;
         this.reducePerTag = reducePerTag;
         this.countdown = countdown;
-        this.countdownMax = countdown;
         this.maxTags = maxTags;
         this.saveTime = saveTime;
         this.tagSound = tagSound;
@@ -143,21 +138,22 @@ public class Arena {
     /**
      * new game is starting.
      */
+    int timer;
     private void startGame() {
         alive.forEach(p -> p.teleport(getGamePoint()));
         started = true;
-        countdown = countdownMax;
+        timer = countdown;
         this.countdownTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(HotPotato.getInstance(), () -> {
             for (Player p : alive) {
                 p.showTitle(Title.title(Locale.getNoPrefix(Locale.MessageKey.TITLE_COUNTDOWN),
-                    Locale.getNoPrefix(Locale.MessageKey.TITLE_COUNTDOWN_SUB, String.valueOf(countdown)),
+                    Locale.getNoPrefix(Locale.MessageKey.TITLE_COUNTDOWN_SUB, String.valueOf(timer)),
                     Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1000), Duration.ofMillis(500))));
             }
-            countdown--;
-            if (countdown <= 3) {
+            timer--;
+            if (timer <= 3) {
                 joinable = false;
             }
-            if (countdown < 0) {
+            if (timer < 0) {
                 Bukkit.getScheduler().cancelTask(countdownTask);
                 if (!checkPlayer()) {
                     end();
@@ -174,7 +170,6 @@ public class Arena {
                         Locale.getNoPrefix(Locale.MessageKey.TITLE_STARTED_SUB, potato.getName()),
                         Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(1000), Duration.ofMillis(500))));
                 }
-                potatoTimer();
             }
         }, 0, 20);
     }
@@ -183,8 +178,9 @@ public class Arena {
      * starts the timer for the potato. restarts when there is a new potato.
      */
     private void potatoTimer() {
+        Bukkit.getScheduler().cancelTask(potatoTask);
         this.potatoTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(HotPotato.getInstance(), new Runnable() {
-            final double timeAfterTags = tagcount * reducePerTag;
+            final double timeAfterTags = tagCount * reducePerTag;
             final double time = 1.0 / ((potatoTime - timeAfterTags) * 20);
             double progress = 1.0;
 
@@ -192,14 +188,16 @@ public class Arena {
             public void run() {
                 bossBar.setTitle(ChatColor.GOLD + getPotato().getName() + ChatColor.WHITE + " got the potato!");
                 if (progress > 1.0) {
-                    log.error("Progress of arena " + getName() + " is not in range!");
-                    log.error("timeAfterTags: " + timeAfterTags + ", tagCount: " + tagcount + ", reducePerTag: " + reducePerTag);
-                    log.error("time: " + time + ", progress: " + progress);
+                    log.error("Progress of arena " + getName() + " is not in range: " + progress);
+                    log.error("timeAfterTags: " + timeAfterTags + ", tagCount: " + tagCount + ", reducePerTag: " + reducePerTag);
+                    log.error("time: " + time);
                     progress = 1;
                 }
                 if (progress < 0.0) {
+                    log.error("Progress of arena " + getName() + " is not in range: " + progress);
+                    log.error("timeAfterTags: " + timeAfterTags + ", tagCount: " + tagCount + ", reducePerTag: " + reducePerTag);
+                    log.error("time: " + time);
                     progress = 0;
-                    log.error(".qwe");
                 }
                 bossBar.setProgress(progress);
                 for (Player p : alive) {
@@ -207,9 +205,9 @@ public class Arena {
                 }
                 progress = progress - time;
                 if (progress <= 0) {
-                    tagcount = 1;
-                    if (alive.size() != 0) {
-                        leave(getPotato());
+                    tagCount = 1;
+                    if (checkPlayer()) {
+                        leave(potato);
                     } else {
                         end();
                     }
@@ -236,25 +234,24 @@ public class Arena {
     private void setNewPotato(Player p) {
         removeOldPotato();
         setPotato(p);
-        p.setGlowing(true);
-        fillHotbar(p);
-        p.getInventory().setHelmet(itemStack);
+        preparePotato();
         broadcast(Locale.MessageKey.ARENA_POTATO, p.getName());
         p.sendMessage(Locale.get(Locale.MessageKey.ARENA_POTATO_INFO));
         for (Player players : alive) {
             players.playSound(players.getLocation(), tagSound, 1, 1);
         }
+        potatoTimer();
     }
 
     /**
-     * broadcast msg (adventure format) to all alive player
+     * broadcast msg to all alive player
      */
     private void broadcast(Locale.MessageKey key, Object... args) {
         alive.forEach(p -> p.sendMessage(Locale.get(key, args)));
     }
 
     /**
-     * broadcast msg (adventure format) to all dead player
+     * broadcast msg to all dead player
      */
     private void broadcastDead(Locale.MessageKey key, Object... args) {
         dead.forEach(p -> p.sendMessage(Locale.get(key, args)));
@@ -274,6 +271,7 @@ public class Arena {
         if (alive.size() == 1) {
             Player p = alive.get(0);
             broadcast(Locale.MessageKey.ARENA_WON, p.getName(), name);
+            broadcastDead(Locale.MessageKey.ARENA_WON, p.getName(), name);
             preparePlayer(p);
             p.teleport(lobbyPoint);
         }
@@ -284,7 +282,7 @@ public class Arena {
         joinable = true;
         potato = null;
         running = false;
-        tagcount = 1;
+        tagCount = 1;
         started = false;
         unprepareArena();
     }
@@ -298,7 +296,7 @@ public class Arena {
             player.sendMessage(Locale.get(Locale.MessageKey.PLAYER_NO_ARENA));
             return;
         }
-        if (potato == player) {
+        if (isPotato(player)) {
             player.sendMessage(Locale.get(Locale.MessageKey.ARENA_POTATOED, player.getName()));
         } else {
             player.sendMessage(Locale.get(Locale.MessageKey.ARENA_LEFT, player.getName()));
@@ -313,7 +311,7 @@ public class Arena {
             end();
             return;
         }
-        if (getPotato() == player) {
+        if (isPotato(player)) {
             broadcast(Locale.MessageKey.ARENA_NEW_POTATO);
             setNewPotato(pickRandomPlayer());
         }
@@ -346,8 +344,6 @@ public class Arena {
         broadcast(Locale.MessageKey.ARENA_JOINED, player.getName());
         if (alive.size() >= minPlayer && !started) {
             startGame();
-        } else {
-            broadcast(Locale.MessageKey.ARENA_WAITING);
         }
     }
 
@@ -356,11 +352,20 @@ public class Arena {
      */
     public void tag(Player damager, Player damaged) {
         addSaved(damager);
-        Bukkit.getScheduler().cancelTask(potatoTask);
+        if (tagCount < maxTags)
+            tagCount++;
         setNewPotato(damaged);
-        if (tagcount < maxTags)
-            tagcount++;
-        potatoTimer();
+    }
+
+    /**
+     * called when a player died in the arena
+     */
+    public void death(Player player) {
+        preparePlayer(player);
+        preparePotato();
+        addSaved(player);
+        player.teleport(gamePoint);
+        player.sendMessage(Locale.get(Locale.MessageKey.ARENA_DEATH));
     }
 
     /**
@@ -381,6 +386,17 @@ public class Arena {
      */
     public boolean isSaved(Player player) {
         return saved.contains(player);
+    }
+
+    /**
+     * checks if player is the potato
+     * @param player the player
+     * @return true, if player is the potato
+     */
+    public boolean isPotato(Player player) {
+        if (potato == null)
+            return false;
+        return potato == player;
     }
 
     /**
@@ -440,14 +456,17 @@ public class Arena {
     }
 
     /**
-     * fills hotbar of player with potatoes
-     * @param player the player
+     * prepares the potato
      */
-    private void fillHotbar(Player player) {
-        Inventory inv = player.getInventory();
+    private void preparePotato() {
+        if (potato == null)
+            return;
+        potato.setGlowing(true);
+        PlayerInventory inv = potato.getInventory();
         inv.clear();
+        inv.setHelmet(Utils.getPotato());
         for (int i = 0; i < 9; i++) {
-            inv.setItem(i, itemStack);
+            inv.setItem(i, Utils.getPotato());
         }
     }
 
@@ -592,12 +611,12 @@ public class Arena {
         this.active = active;
     }
 
-    public int getTagcount() {
-        return tagcount;
+    public int getTagCount() {
+        return tagCount;
     }
 
-    public void setTagcount(int tagcount) {
-        this.tagcount = tagcount;
+    public void setTagCount(int tagCount) {
+        this.tagCount = tagCount;
     }
 
     public Location getLobbyPoint() {
@@ -682,7 +701,6 @@ public class Arena {
 
     public void setCountdown(int countdown) {
         this.countdown = countdown;
-        this.countdownMax = countdown;
     }
 
     public double getPotatoTime() {
@@ -743,8 +761,8 @@ public class Arena {
             ", maxTags=" + maxTags +
             ", tagSound=" + tagSound +
             ", started=" + started +
-            ", tagcount=" + tagcount +
-            ", countdownMax=" + countdownMax +
+            ", tagCount=" + tagCount +
+            ", timer=" + timer +
             ", joinable=" + joinable +
             '}';
     }

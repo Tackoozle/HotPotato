@@ -9,6 +9,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -21,7 +22,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class PlayerListener implements Listener {
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerQuit(PlayerQuitEvent event) {
         Arena arena = HotPotato.getInstance().getManager().getArena(event.getPlayer());
         if (arena == null)
@@ -29,16 +30,16 @@ public class PlayerListener implements Listener {
         arena.leave(event.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerDeath(PlayerDeathEvent event) {
         Arena arena = HotPotato.getInstance().getManager().getArena(event.getPlayer());
         if (arena == null)
             return;
         event.setCancelled(true);
-        arena.leave(event.getPlayer());
+        arena.death(event.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onItemDrop(PlayerDropItemEvent event) {
         Arena arena = HotPotato.getInstance().getManager().getArena(event.getPlayer());
         if (arena == null)
@@ -46,7 +47,7 @@ public class PlayerListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onInventoryClick(InventoryClickEvent event) {
         Arena arena = HotPotato.getInstance().getManager().getArena((Player) event.getWhoClicked());
         if (arena == null)
@@ -54,7 +55,7 @@ public class PlayerListener implements Listener {
         event.setCancelled(true);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onTag(EntityDamageByEntityEvent event) {
         if (!(event.getEntity() instanceof Player))
             return;
@@ -86,7 +87,7 @@ public class PlayerListener implements Listener {
         arena_damaged.tag(damager, damaged);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onSignClick(PlayerInteractEvent event) {
         if (event.getClickedBlock() == null)
             return;
