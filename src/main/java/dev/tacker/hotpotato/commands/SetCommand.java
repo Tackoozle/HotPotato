@@ -6,14 +6,10 @@ import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Permissions;
 import dev.tacker.hotpotato.utils.Utils;
 import org.bukkit.Sound;
-import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
-import org.bukkit.block.data.type.WallSign;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -153,25 +149,6 @@ public class SetCommand extends CustomCommand {
                 arena.setGamePoint(player.getLocation());
                 sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SETTING_SUCCESS, "gamePoint", Utils.locationAsString(player.getLocation())));
                 break;
-            case "sign":
-                Block block = player.getTargetBlock(5);
-                if (block == null || !(block.getState() instanceof WallSign) && !(block.getState() instanceof Sign)) {
-                    sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_ERROR, "Not looking on a sign"));
-                    return;
-                }
-                Sign sign = (Sign) block.getState();
-                if (v.equalsIgnoreCase("add")) {
-                    sign.line(0, Utils.mm(HotPotato.getInstance().getPrefix()));
-                    sign.line(1, Locale.getNoPrefix(Locale.MessageKey.SIGN_ARENA, arena.getName()));
-                    sign.line(2, Locale.getNoPrefix(Locale.MessageKey.SIGN_LINE));
-                    sign.getPersistentDataContainer().set(HotPotato.getInstance().key, PersistentDataType.STRING, arena.getName());
-                    sign.update(true);
-                    sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SIGN_ADD, arena.getName()));
-                } else {
-                    sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_WRONG_INPUT, v));
-                    return;
-                }
-                break;
             //check bool
             case "active":
                 if (!Utils.isBool(v)) {
@@ -235,7 +212,7 @@ public class SetCommand extends CustomCommand {
     protected List<String> tabComplete(CommandSender sender, String[] args) {
         List<String> options = Arrays.asList(
             "minPlayer", "maxPlayer", "countdown", "reducePerTag", "potatoTime", "maxTags", "saveTime",
-            "lobbyPoint", "gamePoint", "sign",
+            "lobbyPoint", "gamePoint",
             "active",
             "barColor", "barStyle", "tagSound");
         switch (args.length) {
@@ -264,8 +241,6 @@ public class SetCommand extends CustomCommand {
                     case "lobbypoint":
                     case "gamepoint":
                         return List.of("here");
-                    case "sign":
-                        return Arrays.asList("add");
                     case "reducepertag":
                     case "potatotime":
                     case "savetime":

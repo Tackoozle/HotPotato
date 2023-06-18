@@ -2,6 +2,7 @@ package dev.tacker.hotpotato.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +18,13 @@ public class Utils {
      */
     public static Component mm(String msg) {
         return MiniMessage.miniMessage().deserialize(msg);
+    }
+
+    /**
+     * returns a component in legacy
+     */
+    public static String legacy(Component msg) {
+        return LegacyComponentSerializer.legacySection().serialize(msg);
     }
 
     /**
