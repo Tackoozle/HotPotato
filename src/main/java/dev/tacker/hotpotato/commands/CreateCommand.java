@@ -53,7 +53,7 @@ public class CreateCommand extends CustomCommand {
         Arena arena = new Arena(name, c.getInt("defaults.minPlayer"), c.getInt("defaults.maxPlayer"), false,
             null, null, BarStyle.SEGMENTED_10, BarColor.RED, c.getDouble("defaults.potatoTime"),
             c.getDouble("defaults.reducePerTag"), c.getInt("defaults.countdown"), c.getInt("defaults.maxTags"),
-            c.getInt("defaults.saveTime"), Sound.BLOCK_NOTE_BLOCK_PLING);
+            c.getDouble("defaults.saveTime"), Sound.BLOCK_NOTE_BLOCK_PLING);
         HotPotato.getInstance().getManager().addArena(arena);
 
         if (arena.save()) {

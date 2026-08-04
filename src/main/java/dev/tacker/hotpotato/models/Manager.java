@@ -19,11 +19,12 @@ public class Manager {
         HotPotato.getInstance().getLogging().log("Start loading arenas..");
         File folder = new File(HotPotato.getInstance().getDataFolder(), "arenas");
         folder.mkdirs();
-        if (folder.listFiles().length == 0) {
+        File[] files = folder.listFiles();
+        if (files == null || files.length == 0) {
             HotPotato.getInstance().getLogging().debug("Found no arena..");
             return;
         }
-        for (File file : folder.listFiles()) {
+        for (File file : files) {
             if (!file.isFile())
                 continue;
             try {

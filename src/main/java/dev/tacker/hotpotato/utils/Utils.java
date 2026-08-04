@@ -6,10 +6,17 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -85,6 +92,17 @@ public class Utils {
     }
 
     /**
+     * replaces "{0}", "{1}", .. placeholders with the given args (no MessageFormat quoting quirks)
+     */
+    public static String format(String message, Object... args) {
+        String result = message;
+        for (int i = 0; i < args.length; i++) {
+            result = result.replace("{" + i + "}", String.valueOf(args[i]));
+        }
+        return result;
+    }
+
+    /**
      * true if value is an integer
      */
     public static boolean isInt(String value) {
@@ -125,6 +143,34 @@ public class Utils {
         double y = Math.round(l.getY() * 100.0 / 100.0);
         double z = Math.round(l.getZ() * 100.0 / 100.0);
         return "X: " + x + ", Y: " + y + ", Z: " + z + ", World: " + l.getWorld().getName();
+    }
+
+    /**
+     * resolves a Sound from its registry key (e.g. "block.note_block.pling")
+     * @return the sound, or null if none matches
+     */
+    public static Sound soundFromString(String value) {
+        try {
+            return Registry.SOUNDS.get(NamespacedKey.minecraft(value.toLowerCase(Locale.ROOT)));
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    /**
+     * returns the registry key of a sound, for saving to config
+     */
+    public static String soundKey(Sound sound) {
+        return Registry.SOUNDS.getKey(sound).getKey();
+    }
+
+    /**
+     * all known sound registry keys, for tab completion
+     */
+    public static List<String> soundKeys() {
+        return Registry.SOUNDS.stream()
+            .map(Utils::soundKey)
+            .collect(Collectors.toList());
     }
 
     public static ItemStack getPotato() {

@@ -60,7 +60,7 @@ public class LeaveCommand extends CustomCommand {
 
             Arena arena = HotPotato.getInstance().getManager().getArena(player);
             if (arena == null) {
-                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_NOT_FOUND));
+                sender.sendMessage(Locale.get(Locale.MessageKey.PLAYER_NOT_IN_ARENA, p));
                 return;
             }
 

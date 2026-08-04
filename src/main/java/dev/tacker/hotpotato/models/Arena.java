@@ -4,10 +4,11 @@ import dev.tacker.hotpotato.HotPotato;
 import dev.tacker.hotpotato.utils.Locale;
 import dev.tacker.hotpotato.utils.Logging;
 import dev.tacker.hotpotato.utils.Utils;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
@@ -107,7 +108,7 @@ public class Arena {
         int countdown = yaml.getInt("countdown");
         int maxTags = yaml.getInt("maxTags");
         double saveTime = yaml.getDouble("saveTime");
-        Sound tagSound = Sound.valueOf(yaml.getString("tagSound"));
+        Sound tagSound = Utils.soundFromString(yaml.getString("tagSound"));
         return new Arena(name, minPlayer, maxPlayer, active,
             lobbyPoint, gamePoint, barStyle, barColor, potatoTime,
             reducePerTag, countdown, maxTags, saveTime, tagSound);
@@ -186,7 +187,8 @@ public class Arena {
 
             @Override
             public void run() {
-                bossBar.setTitle(ChatColor.GOLD + getPotato().getName() + ChatColor.WHITE + " got the potato!");
+                bossBar.setTitle(Utils.legacy(Component.text(getPotato().getName(), NamedTextColor.GOLD)
+                    .append(Component.text(" got the potato!", NamedTextColor.WHITE))));
                 if (progress > 1.0) {
                     log.error("Progress of arena " + getName() + " is not in range: " + progress);
                     log.error("timeAfterTags: " + timeAfterTags + ", tagCount: " + tagCount + ", reducePerTag: " + reducePerTag);
@@ -297,9 +299,9 @@ public class Arena {
             return;
         }
         if (isPotato(player)) {
-            player.sendMessage(Locale.get(Locale.MessageKey.ARENA_POTATOED, player.getName()));
+            broadcast(Locale.MessageKey.ARENA_POTATOED, player.getName());
         } else {
-            player.sendMessage(Locale.get(Locale.MessageKey.ARENA_LEFT, player.getName()));
+            broadcast(Locale.MessageKey.ARENA_LEFT, player.getName());
         }
         alive.remove(player);
         dead.add(player);
@@ -475,7 +477,7 @@ public class Arena {
      * @param p the player
      */
     private void preparePlayer(Player p) {
-        p.setHealth(20);
+        p.setHealth(p.getAttribute(Attribute.MAX_HEALTH).getValue());
         p.setSaturation(20);
         p.setFoodLevel(20);
         p.setGlowing(false);
@@ -526,7 +528,7 @@ public class Arena {
             sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"potatoTime <=0"));
             ok = false;
         }
-        if ((maxTags * reducePerTag) > potatoTime) {
+        if ((maxTags * reducePerTag) >= potatoTime) {
             sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_VALIDATION,"maxTags * reducePerTag > potatoTime!"));
             ok = false;
         }
@@ -572,7 +574,7 @@ public class Arena {
         y.set("countdown", countdown);
         y.set("maxTags", maxTags);
         y.set("saveTime", saveTime);
-        y.set("tagSound", tagSound.name());
+        y.set("tagSound", Utils.soundKey(tagSound));
     }
 
     public String getName() {

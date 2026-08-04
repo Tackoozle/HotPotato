@@ -156,12 +156,8 @@ public class SetCommand extends CustomCommand {
                     return;
                 }
                 bool = Boolean.parseBoolean(v);
-                if (bool && arena.validate(sender)) {
-                    arena.setActive(true);
-                } else {
-                    arena.setActive(false);
-                }
-                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SETTING_SUCCESS, "active", v));
+                arena.setActive(bool);
+                sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SETTING_SUCCESS, "active", bool));
                 break;
             //check string
             case "barcolor":
@@ -185,9 +181,8 @@ public class SetCommand extends CustomCommand {
                 sender.sendMessage(Locale.get(Locale.MessageKey.ARENA_SETTING_SUCCESS, "barStyle", v));
                 break;
             case "tagsound":
-                try {
-                    tagSound = Sound.valueOf(v);
-                } catch (IllegalArgumentException e) {
+                tagSound = Utils.soundFromString(v);
+                if (tagSound == null) {
                     sender.sendMessage(Locale.get(Locale.MessageKey.ERROR_WRONG_INPUT, v));
                     return;
                 }
@@ -260,8 +255,7 @@ public class SetCommand extends CustomCommand {
                             .sorted(String.CASE_INSENSITIVE_ORDER)
                             .collect(Collectors.toList());
                     case "tagsound":
-                        return Arrays.stream(Sound.values())
-                            .map(Enum::name)
+                        return Utils.soundKeys().stream()
                             .filter(e -> e.startsWith(args[2]))
                             .sorted(String.CASE_INSENSITIVE_ORDER)
                             .collect(Collectors.toList());

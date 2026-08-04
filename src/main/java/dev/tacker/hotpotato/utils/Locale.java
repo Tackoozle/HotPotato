@@ -7,7 +7,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,7 +60,7 @@ public class Locale {
      */
     public static String getRaw(MessageKey key, Object... args) {
         String message = messages.getOrDefault(key, key.getDefault());
-        return MessageFormat.format(message, args);
+        return Utils.format(message, args);
     }
 
     /**
@@ -69,7 +68,7 @@ public class Locale {
      */
     public static Component get(MessageKey key, Object... args) {
         String message = messages.getOrDefault(key, key.getDefault());
-        return Utils.mm(HotPotato.getInstance().getPrefix() + MessageFormat.format(message, args));
+        return Utils.mm(HotPotato.getInstance().getPrefix() + Utils.format(message, args));
     }
 
     /**
@@ -77,7 +76,7 @@ public class Locale {
      */
     public static Component getNoPrefix(MessageKey key, Object... args) {
         String message = messages.getOrDefault(key, key.getDefault());
-        return Utils.mm(MessageFormat.format(message, args));
+        return Utils.mm(Utils.format(message, args));
     }
 
     /**
@@ -85,7 +84,7 @@ public class Locale {
      */
     public static Component getWithCommand(MessageKey key, String pre, Object... args) {
         String message = messages.getOrDefault(key, key.getDefault());
-        return Utils.mm(HotPotato.getInstance().getPrefix() + pre + MessageFormat.format(message, args));
+        return Utils.mm(HotPotato.getInstance().getPrefix() + pre + Utils.format(message, args));
     }
 
     public enum MessageKey {
@@ -133,6 +132,7 @@ public class Locale {
 
         PLAYER_MISSING("<red>There is no player {0}"),
         PLAYER_NO_ARENA("<red>You are in no arena"),
+        PLAYER_NOT_IN_ARENA("<red>Player {0} is in no arena"),
 
         TITLE_COUNTDOWN("<white>Starting in..."),
         TITLE_COUNTDOWN_SUB("<red>{0}.."),

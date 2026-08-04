@@ -26,7 +26,7 @@ public class VersionCommand extends CustomCommand {
 
     @Override
     protected void execute(CommandSender sender, String[] args) {
-        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_VERSION, HotPotato.getInstance().getDescription().getVersion()));
+        sender.sendMessage(Locale.get(Locale.MessageKey.COMMAND_VERSION, HotPotato.getInstance().getPluginMeta().getVersion()));
     }
 
     @Override

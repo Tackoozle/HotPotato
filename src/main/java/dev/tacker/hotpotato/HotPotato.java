@@ -41,7 +41,7 @@ public final class HotPotato extends JavaPlugin {
         listenerRegistration();
         commandRegistration();
         Locale.setup();
-        logging.log("HotPotato " + getDescription().getVersion() + " successfully enabled!");
+        logging.log("HotPotato " + getPluginMeta().getVersion() + " successfully enabled!");
     }
 
     @Override
@@ -85,7 +85,7 @@ public final class HotPotato extends JavaPlugin {
         config.addDefault("defaults.potatoTime", 30.0);
         config.addDefault("defaults.reducePerTag", 1.0);
         config.addDefault("defaults.maxTags", 25);
-        config.addDefault("defaults.saveTime", 3);
+        config.addDefault("defaults.saveTime", 3.0);
         config.options().copyDefaults(true);
         this.saveConfig();
     }

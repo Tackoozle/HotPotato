@@ -121,7 +121,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onSighChange(SignChangeEvent event) {
+    public void onSignChange(SignChangeEvent event) {
         if (!Utils.legacy(event.line(0)).equalsIgnoreCase("[hotpotato]"))
             return;
 
